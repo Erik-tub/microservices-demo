@@ -7,7 +7,7 @@ WORKDIR /popupservice
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY popup_main.py popup_pb2.py popup_pb2_grpc.py ./
+COPY popup_main.py popup_pb2.py popup_pb2_grpc.py demo_pb2.py demo_pb2_grpc.py ./
 
 ENV PORT="8080"
 EXPOSE 8080

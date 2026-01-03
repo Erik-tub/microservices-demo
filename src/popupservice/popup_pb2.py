@@ -24,18 +24,17 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bpopup.proto\x12\x05popup\"\"\n\x0cPopupRequest\x12\x12\n\nsession_id\x18\x01 \x01(\t\"\x1d\n\nPopupReply\x12\x0f\n\x07message\x18\x01 \x01(\t2K\n\x0cPopupService\x12;\n\x0fGetPopupMessage\x12\x13.popup.PopupRequest\x1a\x11.popup.PopupReply\"\x00\x42/Z-github.com/your/module/src/popupservice;popupb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bpopup.proto\x12\x05popup\"\"\n\x0cPopupRequest\x12\x12\n\nsession_id\x18\x01 \x01(\t\"\x1d\n\nPopupReply\x12\x0f\n\x07message\x18\x01 \x01(\t2I\n\x0cPopupService\x12\x39\n\x0fGetPopupMessage\x12\x13.popup.PopupRequest\x1a\x11.popup.PopupReplyb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'popup_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'Z-github.com/your/module/src/popupservice;popup'
+  DESCRIPTOR._loaded_options = None
   _globals['_POPUPREQUEST']._serialized_start=22
   _globals['_POPUPREQUEST']._serialized_end=56
   _globals['_POPUPREPLY']._serialized_start=58
   _globals['_POPUPREPLY']._serialized_end=87
   _globals['_POPUPSERVICE']._serialized_start=89
-  _globals['_POPUPSERVICE']._serialized_end=164
+  _globals['_POPUPSERVICE']._serialized_end=162
 # @@protoc_insertion_point(module_scope)

@@ -74,7 +74,6 @@ type frontendServer struct {
 
 	shoppingAssistantSvcAddr string
 
-	// Popup service fields
 	popupSvcAddr string
 	popupSvcConn *grpc.ClientConn
 }
