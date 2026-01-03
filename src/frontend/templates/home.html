@@ -111,24 +111,37 @@
     const messageEl = document.getElementById('popup-message');
     const popupUrl = '{{ $.baseUrl }}/popup-message';
 
-    function showPopup() {
-      fetch(popupUrl, { credentials: 'same-origin' })
-        .then(resp => {
-          if (!resp.ok) throw new Error('network');
-          return resp.text();
-        })
-        .then(text => {
+function showPopup() {
+  fetch(popupUrl, { credentials: 'same-origin' })
+    .then(resp => {
+      if (!resp.ok) throw new Error('network');
+      return resp.text();
+    })
+    .then(text => {
+      try {
+        const data = JSON.parse(text);
+        if (data.image) {
+          messageEl.innerHTML = `<img src="${data.image}" style="max-width:50%; border-radius:4px; margin-bottom:8px;" alt="Outfit">
+                                 <img src="${data.image2}" style="max-width:50%; border-radius:4px; margin-bottom:8px;" alt="Outfit">
+                                 <img src="${data.image3}" style="max-width:50%; border-radius:4px; margin-bottom:8px;" alt="Outfit">
+                                 <p>${data.text || ''}</p>`;
+        } else {
           messageEl.textContent = text || 'Keine Nachricht';
-        })
-        .catch(() => {
-          messageEl.textContent = 'Fehler beim Laden der Nachricht.';
-        })
-        .finally(() => {
-          overlay.style.display = 'flex';
-          overlay.setAttribute('aria-hidden', 'false');
-          closeBtn.focus();
-        });
-    }
+        }
+      } catch {
+        messageEl.textContent = text || 'Keine Nachricht';
+      }
+    })
+    .catch(() => {
+      messageEl.textContent = 'Fehler beim Laden der Nachricht.';
+    })
+    .finally(() => {
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden', 'false');
+      closeBtn.focus();
+    });
+}
+
     function hidePopup() {
       overlay.style.display = 'none';
       overlay.setAttribute('aria-hidden', 'true');

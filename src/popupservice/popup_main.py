@@ -8,8 +8,15 @@ import popup_pb2_grpc
 
 class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
     def GetPopupMessage(self, request, context):
-        msg = f"Head: Body: Shoes: "
-        return popup_pb2.PopupReply(message=msg)
+        # Gib einen JSON-String mit Bild-URL und Text zurück
+        import json
+        data = {
+            "image": "/static/img/products/sunglasses.jpg",
+            "image2": "/static/img/products/tank-top.jpg",
+            "image3": "/static/img/products/loafers.jpg",
+            "text": "Head: sunglasses, Body: tank-top, Shoes: loafers"
+        }
+        return popup_pb2.PopupReply(message=json.dumps(data))
 
 def serve():
     port = os.getenv("PORT", "8080")
