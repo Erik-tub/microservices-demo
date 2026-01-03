@@ -26,6 +26,10 @@ resources:
  - productcatalogservice.yaml
  - recommendationservice.yaml
  - shippingservice.yaml
+ - popupservice.yaml
+patchesStrategicMerge:
+ - redis-cart-patch.yaml
+
 # components:
 # - ../kustomize/components/cymbal-branding
 # - ../kustomize/components/google-cloud-operations

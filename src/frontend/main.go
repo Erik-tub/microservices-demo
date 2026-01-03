@@ -1,17 +1,3 @@
-// Copyright 2018 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package main
 
 import (
@@ -31,6 +17,7 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+  pb "github.com/GoogleCloudPlatform/microservices-demo/src/frontend/popupservice"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -86,6 +73,10 @@ type frontendServer struct {
 	collectorConn *grpc.ClientConn
 
 	shoppingAssistantSvcAddr string
+
+	// Popup service fields
+	popupSvcAddr string
+	popupSvcConn *grpc.ClientConn
 }
 
 func main() {
@@ -138,6 +129,9 @@ func main() {
 	mustMapEnv(&svc.adSvcAddr, "AD_SERVICE_ADDR")
 	mustMapEnv(&svc.shoppingAssistantSvcAddr, "SHOPPING_ASSISTANT_SERVICE_ADDR")
 
+	// Popup service env + conn
+	mustMapEnv(&svc.popupSvcAddr, "POPUP_SERVICE_ADDR")
+
 	mustConnGRPC(ctx, &svc.currencySvcConn, svc.currencySvcAddr)
 	mustConnGRPC(ctx, &svc.productCatalogSvcConn, svc.productCatalogSvcAddr)
 	mustConnGRPC(ctx, &svc.cartSvcConn, svc.cartSvcAddr)
@@ -145,6 +139,8 @@ func main() {
 	mustConnGRPC(ctx, &svc.shippingSvcConn, svc.shippingSvcAddr)
 	mustConnGRPC(ctx, &svc.checkoutSvcConn, svc.checkoutSvcAddr)
 	mustConnGRPC(ctx, &svc.adSvcConn, svc.adSvcAddr)
+	// Connect popup last
+	mustConnGRPC(ctx, &svc.popupSvcConn, svc.popupSvcAddr)
 
 	r := mux.NewRouter()
 	r.HandleFunc(baseUrl+"/", svc.homeHandler).Methods(http.MethodGet, http.MethodHead)
@@ -161,6 +157,9 @@ func main() {
 	r.HandleFunc(baseUrl+"/_healthz", func(w http.ResponseWriter, _ *http.Request) { fmt.Fprint(w, "ok") })
 	r.HandleFunc(baseUrl+"/product-meta/{ids}", svc.getProductByID).Methods(http.MethodGet)
 	r.HandleFunc(baseUrl+"/bot", svc.chatBotHandler).Methods(http.MethodPost)
+
+	// Popup message endpoint used by the frontend JS
+	r.HandleFunc(baseUrl+"/popup-message", svc.popupMessageHandler).Methods(http.MethodGet)
 
 	var handler http.Handler = r
 	handler = &logHandler{log: log, next: handler}     // add logging
@@ -232,4 +231,32 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	if err != nil {
 		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
 	}
+}
+
+
+func (s *frontendServer) popupMessageHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	sessionID := ""
+	if c, err := r.Cookie(cookieSessionID); err == nil {
+		sessionID = c.Value
+	}
+	msg, err := s.getPopupMessage(ctx, sessionID)
+	if err != nil {
+		http.Error(w, "failed to get popup message", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	fmt.Fprint(w, msg)
+}
+
+func (s *frontendServer) getPopupMessage(ctx context.Context, sessionID string) (string, error) {
+    if s.popupSvcConn == nil {
+        return "", fmt.Errorf("popup service not connected")
+    }
+    client := pb.NewPopupServiceClient(s.popupSvcConn)
+    resp, err := client.GetPopupMessage(ctx, &pb.PopupRequest{SessionId: sessionID})
+    if err != nil {
+        return "", err
+    }
+    return resp.Message, nil
 }

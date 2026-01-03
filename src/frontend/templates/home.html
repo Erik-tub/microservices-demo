@@ -1,19 +1,3 @@
-<!--
- Copyright 2020 Google LLC
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
--->
-
 {{ define "home" }}
 
 {{ template "header" . }}
@@ -30,17 +14,12 @@
   <div class="container-fluid">
     <div class="row">
 
-      <!-- The image on the left of the home page, displayed on larger screens. -->
-      <!--<div class="col-4 d-none d-lg-block home-desktop-left-image"></div>-->
-      <!-- @TODO: removed temporarily. When uncommenting, also replace below div with this -->
-      <!--<div class="col-12 col-lg-8">-->
-
       <div class="col-12 col-lg-12 px-10-percent">
 
         <div class="row hot-products-row px-xl-6">
 
           <div class="col-12">
-            <h3>Hot Products</h3>
+            <h3>All Products</h3>
           </div>
 
           {{ range $.products }}
@@ -76,5 +55,100 @@
 <div class="d-lg-none">
   {{ template "footer" . }}
 </div>
+
+<!-- Pop up window -->
+<style>
+  #popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  #popup {
+    background: #fff;
+    border-radius: 8px;
+    max-width: 320px;
+    width: 90%;
+    padding: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    font-family: inherit;
+  }
+  #popup h4 { margin: 0 0 8px 0; font-size: 1rem; }
+  #popup p { margin: 0 0 12px 0; font-size: 0.9rem; color: #333; }
+  #popup .popup-actions { text-align: right; }
+  #popup .btn-close {
+    background: #171515;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  #popup .btn-close:hover { opacity: 0.95; }
+  #popup .btn-close:focus {
+    outline: none;
+  }
+</style>
+
+<div id="popup-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div id="popup" role="document" aria-labelledby="popup-title">
+    <h4 id="popup-title">Outfit-Recommendation</h4>
+    <p id="popup-message">Loading Outfit...</p>
+    <div class="popup-actions">
+      <button class="btn-close" type="button" aria-label="Schließen">Schließen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const overlay = document.getElementById('popup-overlay');
+    const closeBtn = overlay.querySelector('.btn-close');
+    const messageEl = document.getElementById('popup-message');
+    const popupUrl = '{{ $.baseUrl }}/popup-message';
+
+    function showPopup() {
+      fetch(popupUrl, { credentials: 'same-origin' })
+        .then(resp => {
+          if (!resp.ok) throw new Error('network');
+          return resp.text();
+        })
+        .then(text => {
+          messageEl.textContent = text || 'Keine Nachricht';
+        })
+        .catch(() => {
+          messageEl.textContent = 'Fehler beim Laden der Nachricht.';
+        })
+        .finally(() => {
+          overlay.style.display = 'flex';
+          overlay.setAttribute('aria-hidden', 'false');
+          closeBtn.focus();
+        });
+    }
+    function hidePopup() {
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    window.addEventListener('load', function(){
+      setTimeout(showPopup, 1000);
+    });
+
+    closeBtn.addEventListener('click', hidePopup);
+
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) hidePopup();
+    });
+
+    window.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') hidePopup();
+    });
+  })();
+</script>
+
 
 {{ end }}

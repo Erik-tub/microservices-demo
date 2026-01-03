@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-cart
+  labels:
+    app: redis-cart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-cart
+  template:
+    metadata:
+      labels:
+        app: redis-cart
+    spec:
+      containers:
+        - name: redis
+          image: redis:6.2-alpine
+          ports:
+            - containerPort: 6379
+

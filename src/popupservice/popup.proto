@@ -1,0 +1,16 @@
+syntax = "proto3";
+package popup;
+
+option go_package = "github.com/your/module/src/popupservice;popup";
+
+service PopupService {
+  rpc GetPopupMessage (PopupRequest) returns (PopupReply) {}
+}
+
+message PopupRequest {
+  string session_id = 1;
+}
+
+message PopupReply {
+  string message = 1;
+}
