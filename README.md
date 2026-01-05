@@ -7,7 +7,7 @@ This extension to the microservices demo by Google adds the popupservice microse
 When the main page is loaded a popup appears and the frontend makes a request to the popupservice. The popupservice then returns the content for the popup
 consisting of three image links for the outfit categories (Head, Top, Bottom) and a list of the three selected products fetched from the productscatalogservice.
 
-This way the outfit recommendations can dynamically change when new products are added.
+This way the outfit recommendations in the popup can dynamically change when new products are added.
 
 ## How to build?
 
