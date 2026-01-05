@@ -120,13 +120,16 @@ function showPopup() {
     .then(text => {
       try {
         const data = JSON.parse(text);
-        if (data.image) {
-      messageEl.innerHTML = `<div style="text-align:center;">
-                         <img src="${data.image}" style="max-width:50%; border-radius:4px; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;" alt="Outfit">
-                         <img src="${data.image2}" style="max-width:50%; border-radius:4px; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;" alt="Outfit">
-                         <img src="${data.image3}" style="max-width:50%; border-radius:4px; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;" alt="Outfit">
-                         <p>${data.text || ''}</p>
-                       </div>`;
+        if (data.items && data.items.length === 3) {
+          const baseUrl = '{{ $.baseUrl }}';
+          messageEl.innerHTML = `<div style="text-align:center;">
+            ${data.items.map(item => `
+              <a href="${baseUrl}/product/${item.id}" style="display:block; margin-bottom:8px; text-decoration:none;">
+                <img src="${baseUrl}/static/img/products/${item.slug}.jpg" style="max-width:50%; border-radius:4px;" alt="${item.name}">
+                <p style="margin-top:4px; color:#333;">${item.name}</p>
+              </a>
+            `).join('')}
+          </div>`;
         } else {
           messageEl.textContent = text || 'no content';
         }
@@ -143,6 +146,7 @@ function showPopup() {
       closeBtn.focus();
     });
 }
+
 
     function hidePopup() {
       overlay.style.display = 'none';

@@ -25,53 +25,72 @@ class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
             headwear_keywords = ['hat', 'cap', 'beanie', 'helmet', 'headband', 'visor', 'glasses']
             top_keywords = ['shirt', 'tank', 'blouse', 'sweater', 'jacket', 'hoodie', 'top', 'tee', 'watch']
             shoes_keywords = ['shoes', 'boots', 'sneakers', 'loafers', 'sandals', 'slippers', 'heels']
+
             headwear = []
             tops = []
             shoes = []
+
             for product in products_response.products:
                 name_lower = product.name.lower()
                 if any(keyword in name_lower for keyword in headwear_keywords):
-                    headwear.append(product.name)
+                    headwear.append((product.id, product.name))
                 elif any(keyword in name_lower for keyword in top_keywords):
-                    tops.append(product.name)
+                    tops.append((product.id, product.name))
                 elif any(keyword in name_lower for keyword in shoes_keywords):
-                    shoes.append(product.name)
+                    shoes.append((product.id, product.name))
+
             recommended = []
             if headwear:
-                recommended.append(random.choice(headwear).lower().replace(' ', '-'))
+                product_id, product_name = random.choice(headwear)
+                recommended.append({
+                    'id': product_id,
+                    'name': product_name,
+                    'slug': product_name.lower().replace(' ', '-')
+                })
             if tops:
-                recommended.append(random.choice(tops).lower().replace(' ', '-'))
+                product_id, product_name = random.choice(tops)
+                recommended.append({
+                    'id': product_id,
+                    'name': product_name,
+                    'slug': product_name.lower().replace(' ', '-')
+                })
             if shoes:
-                recommended.append(random.choice(shoes).lower().replace(' ', '-'))
+                product_id, product_name = random.choice(shoes)
+                recommended.append({
+                    'id': product_id,
+                    'name': product_name,
+                    'slug': product_name.lower().replace(' ', '-')
+                })
 
-            return recommended if len(recommended) == 3 else ["sunglasses", "tank-top", "loafers"]
+            return recommended if len(recommended) == 3 else [
+                {'id': 'OLJCESPC7Z', 'name': 'Sunglasses', 'slug': 'sunglasses'},
+                {'id': '2ZYFJ3GM2N', 'name': 'Tank Top', 'slug': 'tank-top'},
+                {'id': '66VCHSJNUP', 'name': 'Loafers', 'slug': 'loafers'}
+            ]
 
         except grpc.RpcError:
-            return ["sunglasses", "tank-top", "loafers"]
+            return [
+                {'id': 'OLJCESPC7Z', 'name': 'Sunglasses', 'slug': 'sunglasses'},
+                {'id': '2ZYFJ3GM2N', 'name': 'Tank Top', 'slug': 'tank-top'},
+                {'id': '66VCHSJNUP', 'name': 'Loafers', 'slug': 'loafers'}
+            ]
 
     def GetPopupMessage(self, request, context):
         try:
-            products_response = self.catalog_stub.ListProducts(demo_pb2.Empty())
-            product_names = [p.name for p in products_response.products]
-            product_text = ", ".join(product_names[:10])
             recommended = self.MakeOutfitRecommendation()
-
             data = {
-                "image": f"/static/img/products/{recommended[0]}.jpg",
-                "image2": f"/static/img/products/{recommended[1]}.jpg",
-                "image3": f"/static/img/products/{recommended[2]}.jpg",
-                "text": f"Recommended outfit: {', '.join(recommended)}"
+                "items": recommended
             }
             return popup_pb2.PopupReply(message=json.dumps(data))
         except grpc.RpcError as e:
             data = {
-                "image": "/static/img/products/sunglasses.jpg",
-                "image2": "/static/img/products/tank-top.jpg",
-                "image3": "/static/img/products/loafers.jpg",
-                "text": "Product catalog unavailable"
+                "items": [
+                    {'id': 'OLJCESPC7Z', 'name': 'Sunglasses', 'slug': 'sunglasses'},
+                    {'id': '2ZYFJ3GM2N', 'name': 'Tank Top', 'slug': 'tank-top'},
+                    {'id': '66VCHSJNUP', 'name': 'Loafers', 'slug': 'loafers'}
+                ]
             }
             return popup_pb2.PopupReply(message=json.dumps(data))
-
 
 def serve():
     port = os.getenv("PORT", "8080")
