@@ -99,7 +99,7 @@
     <h4 id="popup-title">Outfit-Recommendation</h4>
     <p id="popup-message">Loading Outfit...</p>
     <div class="popup-actions">
-      <button class="btn-close" type="button" aria-label="Schließen">Schließen</button>
+      <button class="btn-close" type="button" aria-label="close">close</button>
     </div>
   </div>
 </div>
@@ -121,19 +121,21 @@ function showPopup() {
       try {
         const data = JSON.parse(text);
         if (data.image) {
-          messageEl.innerHTML = `<img src="${data.image}" style="max-width:50%; border-radius:4px; margin-bottom:8px;" alt="Outfit">
-                                 <img src="${data.image2}" style="max-width:50%; border-radius:4px; margin-bottom:8px;" alt="Outfit">
-                                 <img src="${data.image3}" style="max-width:50%; border-radius:4px; margin-bottom:8px;" alt="Outfit">
-                                 <p>${data.text || ''}</p>`;
+      messageEl.innerHTML = `<div style="text-align:center;">
+                         <img src="${data.image}" style="max-width:50%; border-radius:4px; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;" alt="Outfit">
+                         <img src="${data.image2}" style="max-width:50%; border-radius:4px; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;" alt="Outfit">
+                         <img src="${data.image3}" style="max-width:50%; border-radius:4px; margin-bottom:8px; display:block; margin-left:auto; margin-right:auto;" alt="Outfit">
+                         <p>${data.text || ''}</p>
+                       </div>`;
         } else {
-          messageEl.textContent = text || 'Keine Nachricht';
+          messageEl.textContent = text || 'no content';
         }
       } catch {
-        messageEl.textContent = text || 'Keine Nachricht';
+        messageEl.textContent = text || 'no content';
       }
     })
     .catch(() => {
-      messageEl.textContent = 'Fehler beim Laden der Nachricht.';
+      messageEl.textContent = 'Error whilst loading the content.';
     })
     .finally(() => {
       overlay.style.display = 'flex';
