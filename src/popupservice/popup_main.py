@@ -22,6 +22,8 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.grpc import GrpcInstrumentorServer
 from opentelemetry.sdk.resources import Resource
 
+
+
 logging.basicConfig(
     level=logging.INFO,
     format='{"timestamp": "%(asctime)s", "severity": "%(levelname)s", "message": "%(message)s", "service": "popupservice"}',
@@ -30,6 +32,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+CATEGORY_KEYWORDS = {
+    "headwear": ['hat', 'cap', 'beanie', 'helmet', 'headband', 'visor', 'glasses'],
+    "tops": ['shirt', 'tank', 'blouse', 'sweater', 'jacket', 'hoodie', 'top', 'tee', 'watch'],
+    "shoes": ['shoes', 'boots', 'sneakers', 'loafers', 'sandals', 'slippers', 'heels']
+}
+    
 class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
     def __init__(self):
         catalog_addr = os.getenv("PRODUCT_CATALOG_SERVICE_ADDR", "productcatalogservice:3550")
@@ -39,56 +47,61 @@ class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
         self.catalog_channel = grpc.insecure_channel(catalog_addr)
         self.catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(self.catalog_channel)
 
+
+
+
+
+
+
+    def select_random_items(self, categories_dict, max_items=3):
+        recommended = []
+        # Flatten all products into a single list with category info
+        all_products = []
+        for cat, items in categories_dict.items():
+            all_products.extend(items)
+        
+        # Randomly select up to max_items
+        selected = random.sample(all_products, min(max_items, len(all_products)))
+        
+        # Convert to dict format
+        for product_id, product_name in selected:
+            recommended.append({
+                "id": product_id,
+                "name": product_name,
+                "slug": product_name.lower().replace(" ", "-")
+            })
+
+        return recommended
+
+            
+
+
+    def select_random_items(categories_dict):
+        recommended = []
+        for cat, items in categories_dict.items():
+            if items: 
+                product_id, product_name = random.choice(items)
+                recommended.append({
+                    "id": product_id,
+                    "name": product_name,
+                    "slug": product_name.lower().replace(" ", "-")
+                })
+            
+        return recommended
+            
     def MakeOutfitRecommendation(self):
         tracer = trace.get_tracer(__name__)
         with tracer.start_as_current_span("make_outfit_recommendation"):
             try:
                 logger.debug("Fetching products from catalog service")
                 products_response = self.catalog_stub.ListProducts(demo_pb2.Empty())
+                categories_dict = self.categorize_products(products_response.products)
+                recommended = self.select_random_items(categories_dict, max_items=3)
 
-                headwear_keywords = ['hat', 'cap', 'beanie', 'helmet', 'headband', 'visor', 'glasses']
-                top_keywords = ['shirt', 'tank', 'blouse', 'sweater', 'jacket', 'hoodie', 'top', 'tee', 'watch']
-                shoes_keywords = ['shoes', 'boots', 'sneakers', 'loafers', 'sandals', 'slippers', 'heels']
 
-                headwear = []
-                tops = []
-                shoes = []
+                logger.info("Categorized products - " + ", ".join(f"{cat}: {len(items)}" for cat, items in categories_dict.items()))
 
-                for product in products_response.products:
-                    name_lower = product.name.lower()
-                    if any(keyword in name_lower for keyword in headwear_keywords):
-                        headwear.append((product.id, product.name))
-                    elif any(keyword in name_lower for keyword in top_keywords):
-                        tops.append((product.id, product.name))
-                    elif any(keyword in name_lower for keyword in shoes_keywords):
-                        shoes.append((product.id, product.name))
-
-                logger.info(f"Categorized products - headwear: {len(headwear)}, tops: {len(tops)}, shoes: {len(shoes)}")
-
-                recommended = []
-                if headwear:
-                    product_id, product_name = random.choice(headwear)
-                    recommended.append({
-                        'id': product_id,
-                        'name': product_name,
-                        'slug': product_name.lower().replace(' ', '-')
-                    })
-                if tops:
-                    product_id, product_name = random.choice(tops)
-                    recommended.append({
-                        'id': product_id,
-                        'name': product_name,
-                        'slug': product_name.lower().replace(' ', '-')
-                    })
-                if shoes:
-                    product_id, product_name = random.choice(shoes)
-                    recommended.append({
-                        'id': product_id,
-                        'name': product_name,
-                        'slug': product_name.lower().replace(' ', '-')
-                    })
-
-                if len(recommended) == 3:
+                if len(recommended) == len(CATEGORY_KEYWORDS):
                     logger.info(f"Successfully created outfit recommendation with {len(recommended)} items")
                     return recommended
                 else:
