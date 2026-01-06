@@ -121,31 +121,35 @@ func main() {
 }
 
 func run(port string) string {
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
-	if err != nil {
-		log.Fatal(err)
-	}
+ listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
+ if err != nil {
+  log.Fatal(err)
+ }
 
-	// Propagate trace context
-	otel.SetTextMapPropagator(
-		propagation.NewCompositeTextMapPropagator(
-			propagation.TraceContext{}, propagation.Baggage{}))
-	var srv *grpc.Server
-	srv = grpc.NewServer(
-		grpc.StatsHandler(otelgrpc.NewServerHandler()))
+ otel.SetTextMapPropagator(
+  propagation.NewCompositeTextMapPropagator(
+   propagation.TraceContext{}, propagation.Baggage{}))
 
-	svc := &productCatalog{}
-	err = loadCatalog(&svc.catalog)
-	if err != nil {
-		log.Fatalf("could not parse product catalog: %v", err)
-	}
+ var srv *grpc.Server
+ if os.Getenv("ENABLE_TRACING") == "1" {
+  srv = grpc.NewServer(
+   grpc.StatsHandler(otelgrpc.NewServerHandler()))
+ } else {
+  srv = grpc.NewServer()
+ }
 
-	pb.RegisterProductCatalogServiceServer(srv, svc)
-	healthcheck := health.NewServer()
-	healthpb.RegisterHealthServer(srv, healthcheck)
-	go srv.Serve(listener)
+ svc := &productCatalog{}
+ err = loadCatalog(&svc.catalog)
+ if err != nil {
+  log.Fatalf("could not parse product catalog: %v", err)
+ }
 
-	return listener.Addr().String()
+ pb.RegisterProductCatalogServiceServer(srv, svc)
+ healthcheck := health.NewServer()
+ healthpb.RegisterHealthServer(srv, healthcheck)
+ go srv.Serve(listener)
+
+ return listener.Addr().String()
 }
 
 func initStats() {

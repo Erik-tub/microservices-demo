@@ -27,6 +27,7 @@ resources:
  - recommendationservice.yaml
  - shippingservice.yaml
  - popupservice.yaml
+ - jaeger.yaml
 patchesStrategicMerge:
  - redis-cart-patch.yaml
 

@@ -15,15 +15,20 @@
 package main
 
 import (
-	"context"
-	"strings"
-	"time"
+    "context"
+    "strings"
+    "time"
 
-	pb "github.com/GoogleCloudPlatform/microservices-demo/src/productcatalogservice/genproto"
-	"google.golang.org/grpc/codes"
-	healthpb "google.golang.org/grpc/health/grpc_health_v1"
-	"google.golang.org/grpc/status"
+    pb "github.com/GoogleCloudPlatform/microservices-demo/src/productcatalogservice/genproto"
+    "google.golang.org/grpc/codes"
+    healthpb "google.golang.org/grpc/health/grpc_health_v1"
+    "google.golang.org/grpc/status"
+    "go.opentelemetry.io/otel"
 )
+
+
+var tracer = otel.Tracer("productcatalogservice")
+
 
 type productCatalog struct {
 	pb.UnimplementedProductCatalogServiceServer
@@ -38,41 +43,53 @@ func (p *productCatalog) Watch(req *healthpb.HealthCheckRequest, ws healthpb.Hea
 	return status.Errorf(codes.Unimplemented, "health check via Watch not implemented")
 }
 
-func (p *productCatalog) ListProducts(context.Context, *pb.Empty) (*pb.ListProductsResponse, error) {
-	time.Sleep(extraLatency)
+func (p *productCatalog) ListProducts(ctx context.Context, req *pb.Empty) (*pb.ListProductsResponse, error) {
+    ctx, span := tracer.Start(ctx, "ListProducts")
+    defer span.End()
 
-	return &pb.ListProductsResponse{Products: p.parseCatalog()}, nil
+    time.Sleep(extraLatency)
+
+    return &pb.ListProductsResponse{Products: p.parseCatalog()}, nil
 }
+
 
 func (p *productCatalog) GetProduct(ctx context.Context, req *pb.GetProductRequest) (*pb.Product, error) {
-	time.Sleep(extraLatency)
+    ctx, span := tracer.Start(ctx, "GetProduct")
+    defer span.End()
 
-	var found *pb.Product
-	for i := 0; i < len(p.parseCatalog()); i++ {
-		if req.Id == p.parseCatalog()[i].Id {
-			found = p.parseCatalog()[i]
-		}
-	}
+    time.Sleep(extraLatency)
 
-	if found == nil {
-		return nil, status.Errorf(codes.NotFound, "no product with ID %s", req.Id)
-	}
-	return found, nil
+    var found *pb.Product
+    for i := 0; i < len(p.parseCatalog()); i++ {
+        if req.Id == p.parseCatalog()[i].Id {
+            found = p.parseCatalog()[i]
+        }
+    }
+
+    if found == nil {
+        return nil, status.Errorf(codes.NotFound, "no product with ID %s", req.Id)
+    }
+    return found, nil
 }
+
 
 func (p *productCatalog) SearchProducts(ctx context.Context, req *pb.SearchProductsRequest) (*pb.SearchProductsResponse, error) {
-	time.Sleep(extraLatency)
+    ctx, span := tracer.Start(ctx, "SearchProducts")
+    defer span.End()
 
-	var ps []*pb.Product
-	for _, product := range p.parseCatalog() {
-		if strings.Contains(strings.ToLower(product.Name), strings.ToLower(req.Query)) ||
-			strings.Contains(strings.ToLower(product.Description), strings.ToLower(req.Query)) {
-			ps = append(ps, product)
-		}
-	}
+    time.Sleep(extraLatency)
 
-	return &pb.SearchProductsResponse{Results: ps}, nil
+    var ps []*pb.Product
+    for _, product := range p.parseCatalog() {
+        if strings.Contains(strings.ToLower(product.Name), strings.ToLower(req.Query)) ||
+            strings.Contains(strings.ToLower(product.Description), strings.ToLower(req.Query)) {
+            ps = append(ps, product)
+        }
+    }
+
+    return &pb.SearchProductsResponse{Results: ps}, nil
 }
+
 
 func (p *productCatalog) parseCatalog() []*pb.Product {
 	if reloadCatalog || len(p.catalog.Products) == 0 {

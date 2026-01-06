@@ -51,6 +51,10 @@ spec:
           value: "3550"
         - name: DISABLE_PROFILER
           value: "1"
+        - name: ENABLE_TRACING
+          value: "1"
+        - name: COLLECTOR_SERVICE_ADDR
+          value: "jaeger:4317"
         readinessProbe:
           grpc:
             port: 3550

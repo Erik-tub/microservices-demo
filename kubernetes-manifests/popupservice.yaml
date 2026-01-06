@@ -22,6 +22,10 @@ spec:
           value: "8080"
         - name: PRODUCT_CATALOG_SERVICE_ADDR
           value: "productcatalogservice:3550"
+        - name: ENABLE_TRACING
+          value: "1"
+        - name: JAEGER_OTLP_ENDPOINT
+          value: "jaeger:4317"
         resources:
           requests:
             cpu: 100m

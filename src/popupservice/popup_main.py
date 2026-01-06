@@ -4,105 +4,177 @@ import grpc
 import time
 import json
 import random
+import logging
+import sys
 
 import popup_pb2
 import popup_pb2_grpc
-
-
 import demo_pb2
 import demo_pb2_grpc
+
+from grpc_health.v1 import health_pb2, health_pb2_grpc
+from grpc_health.v1.health import HealthServicer
+
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.instrumentation.grpc import GrpcInstrumentorServer
+from opentelemetry.sdk.resources import Resource
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='{"timestamp": "%(asctime)s", "severity": "%(levelname)s", "message": "%(message)s", "service": "popupservice"}',
+    stream=sys.stdout
+)
+logger = logging.getLogger(__name__)
 
 
 class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
     def __init__(self):
         catalog_addr = os.getenv("PRODUCT_CATALOG_SERVICE_ADDR", "productcatalogservice:3550")
+        logger.info(f"Connecting to product catalog service at {catalog_addr}")
+
+        # Instrumentierte gRPC-Client-Channel erstellen
         self.catalog_channel = grpc.insecure_channel(catalog_addr)
         self.catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(self.catalog_channel)
 
     def MakeOutfitRecommendation(self):
-        try:
-            products_response = self.catalog_stub.ListProducts(demo_pb2.Empty())
-            headwear_keywords = ['hat', 'cap', 'beanie', 'helmet', 'headband', 'visor', 'glasses']
-            top_keywords = ['shirt', 'tank', 'blouse', 'sweater', 'jacket', 'hoodie', 'top', 'tee', 'watch']
-            shoes_keywords = ['shoes', 'boots', 'sneakers', 'loafers', 'sandals', 'slippers', 'heels']
+        tracer = trace.get_tracer(__name__)
+        with tracer.start_as_current_span("make_outfit_recommendation"):
+            try:
+                logger.debug("Fetching products from catalog service")
+                products_response = self.catalog_stub.ListProducts(demo_pb2.Empty())
 
-            headwear = []
-            tops = []
-            shoes = []
+                headwear_keywords = ['hat', 'cap', 'beanie', 'helmet', 'headband', 'visor', 'glasses']
+                top_keywords = ['shirt', 'tank', 'blouse', 'sweater', 'jacket', 'hoodie', 'top', 'tee', 'watch']
+                shoes_keywords = ['shoes', 'boots', 'sneakers', 'loafers', 'sandals', 'slippers', 'heels']
 
-            for product in products_response.products:
-                name_lower = product.name.lower()
-                if any(keyword in name_lower for keyword in headwear_keywords):
-                    headwear.append((product.id, product.name))
-                elif any(keyword in name_lower for keyword in top_keywords):
-                    tops.append((product.id, product.name))
-                elif any(keyword in name_lower for keyword in shoes_keywords):
-                    shoes.append((product.id, product.name))
+                headwear = []
+                tops = []
+                shoes = []
 
-            recommended = []
-            if headwear:
-                product_id, product_name = random.choice(headwear)
-                recommended.append({
-                    'id': product_id,
-                    'name': product_name,
-                    'slug': product_name.lower().replace(' ', '-')
-                })
-            if tops:
-                product_id, product_name = random.choice(tops)
-                recommended.append({
-                    'id': product_id,
-                    'name': product_name,
-                    'slug': product_name.lower().replace(' ', '-')
-                })
-            if shoes:
-                product_id, product_name = random.choice(shoes)
-                recommended.append({
-                    'id': product_id,
-                    'name': product_name,
-                    'slug': product_name.lower().replace(' ', '-')
-                })
+                for product in products_response.products:
+                    name_lower = product.name.lower()
+                    if any(keyword in name_lower for keyword in headwear_keywords):
+                        headwear.append((product.id, product.name))
+                    elif any(keyword in name_lower for keyword in top_keywords):
+                        tops.append((product.id, product.name))
+                    elif any(keyword in name_lower for keyword in shoes_keywords):
+                        shoes.append((product.id, product.name))
 
-            return recommended if len(recommended) == 3 else [
-                {'id': 'OLJCESPC7Z', 'name': 'Sunglasses', 'slug': 'sunglasses'},
-                {'id': '2ZYFJ3GM2N', 'name': 'Tank Top', 'slug': 'tank-top'},
-                {'id': '66VCHSJNUP', 'name': 'Loafers', 'slug': 'loafers'}
-            ]
+                logger.info(f"Categorized products - headwear: {len(headwear)}, tops: {len(tops)}, shoes: {len(shoes)}")
 
-        except grpc.RpcError:
-            return [
-                {'id': 'OLJCESPC7Z', 'name': 'Sunglasses', 'slug': 'sunglasses'},
-                {'id': '2ZYFJ3GM2N', 'name': 'Tank Top', 'slug': 'tank-top'},
-                {'id': '66VCHSJNUP', 'name': 'Loafers', 'slug': 'loafers'}
-            ]
+                recommended = []
+                if headwear:
+                    product_id, product_name = random.choice(headwear)
+                    recommended.append({
+                        'id': product_id,
+                        'name': product_name,
+                        'slug': product_name.lower().replace(' ', '-')
+                    })
+                if tops:
+                    product_id, product_name = random.choice(tops)
+                    recommended.append({
+                        'id': product_id,
+                        'name': product_name,
+                        'slug': product_name.lower().replace(' ', '-')
+                    })
+                if shoes:
+                    product_id, product_name = random.choice(shoes)
+                    recommended.append({
+                        'id': product_id,
+                        'name': product_name,
+                        'slug': product_name.lower().replace(' ', '-')
+                    })
+
+                if len(recommended) == 3:
+                    logger.info(f"Successfully created outfit recommendation with {len(recommended)} items")
+                    return recommended
+                else:
+                    logger.warning(f"Could only find {len(recommended)} items, using fallback")
+                    return self._get_fallback_outfit()
+
+            except grpc.RpcError as e:
+                logger.error(f"gRPC error while fetching products: {e.code()} - {e.details()}")
+                return self._get_fallback_outfit()
+            except Exception as e:
+                logger.error(f"Unexpected error in MakeOutfitRecommendation: {str(e)}")
+                return self._get_fallback_outfit()
+
+    def _get_fallback_outfit(self):
+        return [
+            {'id': 'OLJCESPC7Z', 'name': 'Sunglasses', 'slug': 'sunglasses'},
+            {'id': '2ZYFJ3GM2N', 'name': 'Tank Top', 'slug': 'tank-top'},
+            {'id': '66VCHSJNUP', 'name': 'Loafers', 'slug': 'loafers'}
+        ]
 
     def GetPopupMessage(self, request, context):
-        try:
-            recommended = self.MakeOutfitRecommendation()
-            data = {
-                "items": recommended
-            }
-            return popup_pb2.PopupReply(message=json.dumps(data))
-        except grpc.RpcError as e:
-            data = {
-                "items": [
-                    {'id': 'OLJCESPC7Z', 'name': 'Sunglasses', 'slug': 'sunglasses'},
-                    {'id': '2ZYFJ3GM2N', 'name': 'Tank Top', 'slug': 'tank-top'},
-                    {'id': '66VCHSJNUP', 'name': 'Loafers', 'slug': 'loafers'}
-                ]
-            }
-            return popup_pb2.PopupReply(message=json.dumps(data))
+        tracer = trace.get_tracer(__name__)
+        with tracer.start_as_current_span("get_popup_message") as span:
+            session_id = request.session_id or "unknown"
+            span.set_attribute("session.id", session_id)
+            logger.info(f"Popup message requested for session: {session_id}")
+
+            try:
+                recommended = self.MakeOutfitRecommendation()
+                data = {"items": recommended}
+                logger.info(f"Returning outfit recommendation for session: {session_id}")
+                return popup_pb2.PopupReply(message=json.dumps(data))
+            except Exception as e:
+                logger.error(f"Error in GetPopupMessage: {str(e)}")
+                data = {"items": self._get_fallback_outfit()}
+                return popup_pb2.PopupReply(message=json.dumps(data))
+
+
+def init_tracing():
+    if os.getenv("ENABLE_TRACING") != "1":
+        logger.info("Tracing disabled")
+        return
+
+    logger.info("Initializing OTLP tracing to Jaeger")
+    jaeger_endpoint = os.getenv("JAEGER_OTLP_ENDPOINT", "jaeger:4317")
+
+    resource = Resource.create({"service.name": "popupservice"})
+    trace.set_tracer_provider(TracerProvider(resource=resource))
+
+    otlp_exporter = OTLPSpanExporter(
+        endpoint=jaeger_endpoint,
+        insecure=True
+    )
+
+    span_processor = BatchSpanProcessor(otlp_exporter)
+    trace.get_tracer_provider().add_span_processor(span_processor)
+
+    logger.info(f"Tracing configured with OTLP endpoint at {jaeger_endpoint}")
+
 
 def serve():
+    init_tracing()
+
     port = os.getenv("PORT", "8080")
+    if os.getenv("ENABLE_TRACING") == "1":
+        GrpcInstrumentorServer().instrument()
+        from opentelemetry.instrumentation.grpc import GrpcInstrumentorClient
+        GrpcInstrumentorClient().instrument()
+
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
     popup_pb2_grpc.add_PopupServiceServicer_to_server(PopupServiceServicer(), server)
+
+    health_servicer = HealthServicer()
+    health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
+    health_servicer.set("", health_pb2.HealthCheckResponse.SERVING)
+    health_servicer.set("popupservice", health_pb2.HealthCheckResponse.SERVING)
+
     server.add_insecure_port(f"[::]:{port}")
     server.start()
-    print(f"popupservice listening on port {port}", flush=True)
+    logger.info(f"popupservice listening on port {port}")
+
     try:
         while True:
             time.sleep(60)
     except KeyboardInterrupt:
+        logger.info("Shutting down popupservice")
         server.stop(0)
 
 
