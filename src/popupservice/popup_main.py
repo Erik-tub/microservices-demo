@@ -61,7 +61,6 @@ class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
     def select_random_items(self, categories_dict, max_items=3):
             recommended = []
 
-            # Iterate through categories in order: headwear, tops, shoes
             for cat in ["headwear", "tops", "shoes"]:
                 items = categories_dict.get(cat, [])
                 if items:
