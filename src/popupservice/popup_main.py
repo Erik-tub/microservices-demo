@@ -43,15 +43,8 @@ class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
         catalog_addr = os.getenv("PRODUCT_CATALOG_SERVICE_ADDR", "productcatalogservice:3550")
         logger.info(f"Connecting to product catalog service at {catalog_addr}")
 
-        # Instrumentierte gRPC-Client-Channel erstellen
         self.catalog_channel = grpc.insecure_channel(catalog_addr)
         self.catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(self.catalog_channel)
-
-
-
-
-
-
 
     def select_random_items(self, categories_dict, max_items=3):
         recommended = []

@@ -13,11 +13,10 @@ This way the outfit recommendations in the popup can dynamically change when new
 
 The build process is fully automated via skaffold. Simply use "skaffold dev" to build and deploy the application in developer mode.
 
-Known Issues: The cartservice build fails on Apple silicon machines. Changing the yaml file to force this service to run emulated rather than native arm can fix this.
-
 ## How to test?
 
-Run the unit tests bundled with this repository.
+The popupservice includes comprehensive unit tests in "test_popup_main.py" that validate all core functions including outfit recommendations, random item selection, fallback behavior, and tracing initialization. Navigate to the "src/popupservice" directory and run "python test_popup_main.py" to execute the tests. 
+The tests use Python's built-in "unittest" framework with mocked external dependencies (gRPC, OpenTelemetry), so no additional services need to be running.
 
 ## How to deploy?
 
@@ -34,5 +33,7 @@ In the jaeger UI select "popupservice" to view the traces generated.
 
 Logging is done via stdout and can be viewed using kubectl logs commands or via the skaffold terminal output. The logs are structured json logs containing useful information for debugging and severity levels.
 
+## FIXES
 
+If the microservice "redis" fails to build, you need to manually pull via "docker pull https://docker.io/library/redis:6.2-alpine" (a docker account is needed)
 
