@@ -37,7 +37,7 @@ CATEGORY_KEYWORDS = {
     "tops": ['shirt', 'tank', 'blouse', 'sweater', 'jacket', 'hoodie', 'top', 'tee', 'watch'],
     "shoes": ['shoes', 'boots', 'sneakers', 'loafers', 'sandals', 'slippers', 'heels']
 }
-    
+
 class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
     def __init__(self):
         catalog_addr = os.getenv("PRODUCT_CATALOG_SERVICE_ADDR", "productcatalogservice:3550")
@@ -46,42 +46,36 @@ class PopupServiceServicer(popup_pb2_grpc.PopupServiceServicer):
         self.catalog_channel = grpc.insecure_channel(catalog_addr)
         self.catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(self.catalog_channel)
 
+    def categorize_products(self, products):
+        categories_dict = {cat: [] for cat in CATEGORY_KEYWORDS.keys()}
+
+        for product in products:
+            product_name_lower = product.name.lower()
+            for category, keywords in CATEGORY_KEYWORDS.items():
+                if any(keyword in product_name_lower for keyword in keywords):
+                    categories_dict[category].append((product.id, product.name))
+                    break
+
+        return categories_dict
+
     def select_random_items(self, categories_dict, max_items=3):
-        recommended = []
-        # Flatten all products into a single list with category info
-        all_products = []
-        for cat, items in categories_dict.items():
-            all_products.extend(items)
-        
-        # Randomly select up to max_items
-        selected = random.sample(all_products, min(max_items, len(all_products)))
-        
-        # Convert to dict format
-        for product_id, product_name in selected:
-            recommended.append({
-                "id": product_id,
-                "name": product_name,
-                "slug": product_name.lower().replace(" ", "-")
-            })
+            recommended = []
 
-        return recommended
+            # Iterate through categories in order: headwear, tops, shoes
+            for cat in ["headwear", "tops", "shoes"]:
+                items = categories_dict.get(cat, [])
+                if items:
+                    product_id, product_name = random.choice(items)
+                    recommended.append({
+                        "id": product_id,
+                        "name": product_name,
+                        "slug": product_name.lower().replace(" ", "-")
+                    })
 
-            
+            return recommended
 
 
-    def select_random_items(categories_dict):
-        recommended = []
-        for cat, items in categories_dict.items():
-            if items: 
-                product_id, product_name = random.choice(items)
-                recommended.append({
-                    "id": product_id,
-                    "name": product_name,
-                    "slug": product_name.lower().replace(" ", "-")
-                })
-            
-        return recommended
-            
+
     def MakeOutfitRecommendation(self):
         tracer = trace.get_tracer(__name__)
         with tracer.start_as_current_span("make_outfit_recommendation"):
