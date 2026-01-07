@@ -59,35 +59,40 @@ class TestPopupServiceFunctions(unittest.TestCase):
 
     def test_select_random_items_with_empty_dict(self):
         """Test select_random_items with empty categories"""
+        service = object.__new__(popup_main.PopupServiceServicer)
         categories = {}
-        result = popup_main.PopupServiceServicer.select_random_items(categories)
+        result = service.select_random_items(categories, max_items=3)
         
         self.assertEqual(len(result), 0)
         self.assertIsInstance(result, list)
 
     def test_select_random_items_with_single_category(self):
         """Test select_random_items with one category"""
+        service = object.__new__(popup_main.PopupServiceServicer)
         categories = {
             "headwear": [("ID1", "Hat"), ("ID2", "Cap")]
         }
-        result = popup_main.PopupServiceServicer.select_random_items(categories)
+        result = service.select_random_items(categories, max_items=3)
         
-        # The function picks one random item per category
+        # The function picks one item from headwear category
         self.assertEqual(len(result), 1)
         self.assertIn('id', result[0])
         self.assertIn('name', result[0])
         self.assertIn('slug', result[0])
+        # Should be either Hat or Cap
+        self.assertIn(result[0]['id'], ['ID1', 'ID2'])
 
     def test_select_random_items_with_multiple_categories(self):
         """Test select_random_items with multiple categories"""
+        service = object.__new__(popup_main.PopupServiceServicer)
         categories = {
             "headwear": [("ID1", "Hat"), ("ID2", "Cap")],
             "tops": [("ID3", "Shirt"), ("ID4", "Jacket")],
             "shoes": [("ID5", "Sneakers")]
         }
-        result = popup_main.PopupServiceServicer.select_random_items(categories)
+        result = service.select_random_items(categories, max_items=3)
         
-        # The function picks one item per category
+        # The function picks one item from each of the 3 categories
         self.assertEqual(len(result), 3)
         
         for item in result:
@@ -99,16 +104,20 @@ class TestPopupServiceFunctions(unittest.TestCase):
 
     def test_select_random_items_with_empty_category(self):
         """Test select_random_items when one category is empty"""
+        service = object.__new__(popup_main.PopupServiceServicer)
         categories = {
             "headwear": [("ID1", "Hat")],
-            "tops": [],
+            "tops": [],  # Empty category
             "shoes": [("ID5", "Sneakers")]
         }
         
-        result = popup_main.PopupServiceServicer.select_random_items(categories)
+        result = service.select_random_items(categories, max_items=3)
         
-        # Should only return items from non-empty categories
+        # Should only return items from non-empty categories (headwear and shoes)
         self.assertEqual(len(result), 2)
+        item_ids = [item['id'] for item in result]
+        self.assertIn('ID1', item_ids)
+        self.assertIn('ID5', item_ids)
 
 
 class TestInitTracing(unittest.TestCase):
