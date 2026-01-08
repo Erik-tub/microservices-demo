@@ -37,3 +37,7 @@ Logging is done via stdout and can be viewed using kubectl logs commands or via 
 
 If the microservice "redis" fails to build, you need to manually pull via "docker pull https://docker.io/library/redis:6.2-alpine" (a docker account is needed)
 
+
+
+https://github.com/user-attachments/assets/8a0a1e5e-28d0-46b3-ae4f-ed8e71718d9b
+
