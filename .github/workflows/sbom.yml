@@ -37,22 +37,33 @@ jobs:
 
       - name: Merge service SBOMs
         run: |
-          jq -s '{
-            bomFormat: .[0].bomFormat,
-            specVersion: .[0].specVersion,
-            serialNumber: "urn:uuid:'$(uuidgen)'",
-            version: 1,
-            metadata: {
-              timestamp: (.[0].metadata.timestamp // now | todate),
-              tools: .[0].metadata.tools,
-              component: {
-                type: "application",
-                name: "microservices-demo",
-                version: "'${{ github.sha }}'"
-              }
-            },
-            components: ([.[].components] | add | unique_by(.purl // .name))
-          }' sboms/*.json > sbom.json
+          if [ -z "$(ls -A sboms/*.json 2>/dev/null)" ]; then
+            echo "No SBOMs found - creating empty SBOM"
+            echo '{
+              "bomFormat": "CycloneDX",
+              "specVersion": "1.4",
+              "serialNumber": "urn:uuid:'$(uuidgen)'",
+              "version": 1,
+              "components": []
+            }' > sbom.json
+          else
+            jq -s '{
+              bomFormat: .[0].bomFormat,
+              specVersion: .[0].specVersion,
+              serialNumber: "urn:uuid:'$(uuidgen)'",
+              version: 1,
+              metadata: {
+                timestamp: (now | strftime("%Y-%m-%dT%H:%M:%SZ")),
+                tools: (.[0].metadata.tools // []),
+                component: {
+                  type: "application",
+                  name: "microservices-demo",
+                  version: "'${{ github.sha }}'"
+                }
+              },
+              components: ([.[].components // []] | add | unique_by(.purl // .name))
+            }' sboms/*.json > sbom.json
+          fi
 
       - name: Upload SBOM as Artifact
         uses: actions/upload-artifact@v4
