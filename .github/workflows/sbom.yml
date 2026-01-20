@@ -34,7 +34,9 @@ jobs:
       - name: Build and scan all service images
         run: |
           mkdir -p sboms vulnerabilities
-          failed_services=()REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          failed_services=()
+
+          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
           for service_dir in src/*/; do
             service=$(basename "$service_dir")
