@@ -34,6 +34,9 @@ jobs:
           mkdir -p sboms
           failed_services=()
 
+          # Convert repository owner to lowercase
+          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+
           for service_dir in src/*/; do
             service=$(basename "$service_dir")
             dockerfile="$service_dir/Dockerfile"
@@ -41,7 +44,7 @@ jobs:
             if [ -f "$dockerfile" ]; then
               echo "Building and scanning $service..."
 
-              image_name="ghcr.io/${{ github.repository_owner }}/$(echo $service | tr '[:upper:]' '[:lower:]'):sbom-scan"
+              image_name="ghcr.io/${REPO_OWNER}/$(echo $service | tr '[:upper:]' '[:lower:]'):sbom-scan"
 
               if docker buildx build \
                 --cache-from type=registry,ref=${image_name}-cache \
