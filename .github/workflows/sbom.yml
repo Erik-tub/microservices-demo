@@ -1,0 +1,35 @@
+name: Generate SBOM
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate SBOM with Syft
+        uses: anchore/sbom-action@v0
+        with:
+          format: cyclonedx-json
+          output-file: sbom.json
+
+      - name: Upload SBOM as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom-${{ github.sha }}
+          path: sbom.json
+
+      - name: Commit SBOM to Repository (main only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          mv sbom.json sbom-latest.json
+          git add sbom-latest.json
+          git diff --staged --quiet || git commit -m "Update SBOM [skip ci]"
+          git push
