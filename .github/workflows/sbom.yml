@@ -1,4 +1,4 @@
-name: Generate SBOM
+name: Generate SBOM and Scan Vulnerabilities
 on:
   push:
     branches: [main]
@@ -10,6 +10,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      security-events: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,17 +26,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Syft
+      - name: Install Syft and Grype
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Build and scan all service images
         run: |
-          mkdir -p sboms
-          failed_services=()
-
-          # Convert repository owner to lowercase
-          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          mkdir -p sboms vulnerabilities
+          failed_services=()REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
           for service_dir in src/*/; do
             service=$(basename "$service_dir")
@@ -54,8 +53,21 @@ jobs:
                 "$service_dir" \
                 --load; then
 
+                # Generate SBOM
                 syft "docker:$image_name" -o cyclonedx-json=sboms/${service}.json
-                echo "Successfully scanned $service"
+                echo "SBOM generated for $service"
+
+                # Scan for vulnerabilities
+                grype "docker:$image_name" \
+                  -o json \
+                  --file vulnerabilities/${service}.json \
+
+
+                grype "docker:$image_name" \
+                  -o table \
+                  --file vulnerabilities/${service}.txt
+
+                echo "Vulnerability scan completed for $service"
               else
                 echo "Build failed for $service"
                 failed_services+=("$service")
@@ -67,6 +79,9 @@ jobs:
 
           echo "Generated SBOMs:"
           ls -lh sboms/ || echo "No SBOMs generated"
+
+          echo "Vulnerability Reports:"
+          ls -lh vulnerabilities/ || echo "No reports generated"
 
           if [ ${#failed_services[@]} -gt 0 ]; then
             echo "Failed services: ${failed_services[*]}"
@@ -102,20 +117,40 @@ jobs:
             }' sboms/*.json > sbom.json
           fi
 
-      - name: Upload SBOM as Artifact
+      - name: Generate vulnerability summary
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "# Vulnerability Summary" > vulnerability-summary.md
+          echo "Generated: $(date)" >> vulnerability-summary.md
+          echo "" >> vulnerability-summary.md
+
+          for report in vulnerabilities/*.txt; do
+            if [ -f "$report" ]; then
+              service=$(basename "$report" .txt)
+              echo "## $service" >> vulnerability-summary.md
+              echo '```' >> vulnerability-summary.md
+              cat "$report" >> vulnerability-summary.md
+              echo '```' >> vulnerability-summary.md
+              echo "" >> vulnerability-summary.md
+            fi
+          done
+
+      - name: Upload SBOM and Vulnerability Reports
         uses: actions/upload-artifact@v4
         with:
-          name: sbom-${{ github.sha }}
+          name: security-reports-${{ github.sha }}
           path: |
             sbom.json
             sboms/
+            vulnerabilities/
+            vulnerability-summary.md
 
-      - name: Commit SBOM to Repository (main only)
+      - name: Commit SBOM and Vulnerability Reports (main only)
         if: github.ref == 'refs/heads/main'
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           mv sbom.json sbom-latest.json
-          git add sbom-latest.json
-          git diff --staged --quiet || git commit -m "Update SBOM [skip ci]"
+          git add sbom-latest.json vulnerability-summary.md
+          git diff --staged --quiet || git commit -m "Update SBOM and vulnerability reports [skip ci]"
           git push
