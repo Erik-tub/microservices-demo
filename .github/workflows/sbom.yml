@@ -2,8 +2,7 @@ name: Generate SBOM and Scan Vulnerabilities
 on:
   push:
     branches: [main]
-  pull_request:
-  schedule:
+  pull_request:schedule:
     - cron: '0 2 * * *'
 
 jobs:
@@ -23,7 +22,15 @@ jobs:
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
-      - name: Process each service
+      - name: Generate combined SBOM
+        run: |
+          syft dir:. -o cyclonedx-json > sbom-combined.json
+
+      - name: Scan for vulnerabilities
+        run: |
+          grype sbom:sbom-combined.json -o json > vuln-combined.json || true
+
+      - name: Process individual services for issue creation
         run: |
           services=$(cat .github/service-owners.json | jq -c '.services[]')
 
@@ -33,35 +40,42 @@ jobs:
 
             echo "Processing $name..."
 
-            syft dir:$path \
-              -o cyclonedx-json > sbom-$name.json
-
-            grype sbom:sbom-$name.json --fail-on critical -o json > vuln-$name.json || true
+            syft dir:$path -o cyclonedx-json > sbom-$name.json
+            grype sbom:sbom-$name.json -o json > vuln-$name.json || true
           done
 
-      - name: Upload SBOM Reports as Artifacts
+      - name: Upload combined SBOM as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: sbom-reports-${{ github.sha }}
-          path: sbom-*.json
+          name: sbom-combined-${{ github.sha }}
+          path: sbom-combined.json
 
-      - name: Upload Vulnerability Reports as Artifacts
+      - name: Upload combined Vulnerability Report as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: vuln-reports-${{ github.sha }}
-          path: vuln-*.json
+          name: vuln-combined-${{ github.sha }}
+          path: vuln-combined.json
 
-      - name: Commit SBOM files to Repository (main only)
+      - name: Upload individual service reports as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: service-reports-${{ github.sha }}
+          path: |
+            sbom-*.json
+            vuln-*.json
+
+      - name: Commit SBOM and Vulnerability Reports (main only)
         if: github.ref == 'refs/heads/main'
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
 
-          mkdir -p sbom-latest
-          cp sbom-*.json sbom-latest/
+          mkdir -p reports-latest
+          cp sbom-combined.json reports-latest/
+          cp vuln-combined.json reports-latest/
 
-          git add sbom-latest/
-          git diff --staged --quiet || git commit -m "Update SBOM files [skip ci]"
+          git add reports-latest/
+          git diff --staged --quiet || git commit -m "Update SBOM and vulnerability reports [skip ci]"
           git push
 
       - name: Create issues for critical vulnerabilities
@@ -79,12 +93,13 @@ jobs:
                 const critical = vulns.matches?.filter(v => v.vulnerability.severity === 'Critical') || [];
 
                 if (critical.length > 0) {
-                  const issueBody = `**${critical.length} critical issues** in \`${service.name}\` found.\n\n` +
-                    `**Details:**\n` +
+                  const issueBody = `**${critical.length} critical vulnerabilities** found in \`${service.name}\`\n\n` +
+                    `**Top vulnerabilities:**\n` +
                     critical.slice(0, 10).map(v =>
                       `- **${v.vulnerability.id}** in \`${v.artifact.name}@${v.artifact.version}\`\n` +
-                      `  severity: ${v.vulnerability.severity}\n` +
-                      `  ${v.vulnerability.description || 'no description'}`
+                      `  Severity: ${v.vulnerability.severity}\n` +
+                      `  ${v.vulnerability.description || 'No description available'}\n` +
+                      `  Fix: ${v.vulnerability.fix?.state || 'Unknown'}`
                     ).join('\n\n');
 
                   const assignees = service.github_username && service.github_username.trim() !== ''
@@ -94,7 +109,7 @@ jobs:
                   await github.rest.issues.create({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
-                    title: `critical weakness in ${service.name}`,
+                    title: `Critical vulnerabilities in ${service.name}`,
                     body: issueBody,
                     labels: ['security', 'critical', service.name],
                     assignees: assignees
