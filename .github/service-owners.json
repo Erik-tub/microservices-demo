@@ -1,0 +1,69 @@
+{
+  "services": [
+    {
+      "name": "adservice",
+      "path": "src/adservice",
+      "github_username": ""
+    },
+    {
+      "name": "cartservice",
+      "path": "src/cartservice",
+      "github_username": ""
+    },
+    {
+      "name": "checkoutservice",
+      "path": "src/checkoutservice",
+      "github_username": ""
+    },
+    {
+      "name": "currencyservice",
+      "path": "src/currencyservice",
+      "github_username": ""
+    },
+    {
+      "name": "emailservice",
+      "path": "src/emailservice",
+      "github_username": ""
+    },
+    {
+      "name": "frontend",
+      "path": "src/frontend",
+      "github_username": ""
+    },
+    {
+      "name": "loadgenerator",
+      "path": "src/loadgenerator",
+      "github_username": ""
+    },
+    {
+      "name": "paymentservice",
+      "path": "src/paymentservice",
+      "github_username": ""
+    },
+    {
+      "name": "popupservice",
+      "path": "src/popupservice",
+      "github_username": "Erik-tub"
+    },
+    {
+      "name": "productcatalogservice",
+      "path": "src/productcatalogservice",
+      "github_username": ""
+    },
+    {
+      "name": "recommendationservice",
+      "path": "src/recommendationservice",
+      "github_username": ""
+    },
+    {
+      "name": "shippingservice",
+      "path": "src/shippingservice",
+      "github_username": ""
+    },
+    {
+      "name": "shoppingassistantservice",
+      "path": "src/shoppingassistantservice",
+      "github_username": ""
+    }
+  ]
+}
