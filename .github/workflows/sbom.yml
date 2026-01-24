@@ -77,7 +77,7 @@ jobs:
             }
 
       - name: Upload SBOM and Vulnerability Reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sbom-reports-${{ github.sha }}
           path: |
