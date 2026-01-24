@@ -33,9 +33,38 @@ jobs:
 
             echo "Processing $name..."
 
-            syft dir:$path -o cyclonedx-json > sbom-$name.json
+            syft dir:$path \
+              --name $name \
+              --source-version $(git rev-parse --short HEAD) \
+              -o cyclonedx-json > sbom-$name.json
+
             grype sbom:sbom-$name.json --fail-on critical -o json > vuln-$name.json || true
           done
+
+      - name: Upload SBOM Reports as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-reports-${{ github.sha }}
+          path: sbom-*.json
+
+      - name: Upload Vulnerability Reports as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vuln-reports-${{ github.sha }}
+          path: vuln-*.json
+
+      - name: Commit SBOM files to Repository (main only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          mkdir -p sbom-latest
+          cp sbom-*.json sbom-latest/
+
+          git add sbom-latest/
+          git diff --staged --quiet || git commit -m "Update SBOM files [skip ci]"
+          git push
 
       - name: Create issues for critical vulnerabilities
         if: github.ref == 'refs/heads/main'
@@ -75,11 +104,3 @@ jobs:
                 }
               }
             }
-
-      - name: Upload SBOM and Vulnerability Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-reports-${{ github.sha }}
-          path: |
-            sbom-*.json
-            vuln-*.json
