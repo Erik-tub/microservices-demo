@@ -34,8 +34,6 @@ jobs:
             echo "Processing $name..."
 
             syft dir:$path \
-              --name $name \
-              --source-version $(git rev-parse --short HEAD) \
               -o cyclonedx-json > sbom-$name.json
 
             grype sbom:sbom-$name.json --fail-on critical -o json > vuln-$name.json || true
