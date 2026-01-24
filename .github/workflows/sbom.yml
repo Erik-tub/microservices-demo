@@ -1,9 +1,13 @@
 name: Generate SBOM and Scan Vulnerabilities
+# yaml
 on:
   push:
     branches: [main]
-  pull_request:schedule:
+  pull_request:
+    branches: [main]
+  schedule:
     - cron: '0 2 * * *'
+
 
 jobs:
   sbom-and-scan:
