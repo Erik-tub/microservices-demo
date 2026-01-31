@@ -36,26 +36,15 @@ jobs:
 
       - name: Build and scan services
         run: |
-          services=(
-            "adservice"
-            "cartservice"
-            "checkoutservice"
-            "currencyservice"
-            "emailservice"
-            "frontend"
-            "loadgenerator"
-            "paymentservice"
-            "productcatalogservice"
-            "recommendationservice"
-            "shippingservice"
-            "shoppingassistantservice"
-          )
+          # Find all Dockerfiles recursively
+          find src -name Dockerfile -type f | while read dockerfile; do
+            service_dir=$(dirname "$dockerfile")
+            service=$(basename "$service_dir")
 
-          for service in "${services[@]}"; do
-            echo "Processing $service..."
+            echo "Processing $service from $service_dir..."
 
             # Build image
-            docker build -t $service:latest ./src/$service
+            docker build -t $service:latest "$service_dir"
 
             # Generate SBOM
             syft $service:latest -o json > sbom/${service}-sbom.json
