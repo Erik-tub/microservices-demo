@@ -68,6 +68,8 @@ jobs:
           done
 
       - name: Parse and create issues for critical vulnerabilities
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           for vuln_file in sbom/*-vulnerabilities.json; do
             service=$(basename "$vuln_file" -vulnerabilities.json)
@@ -79,7 +81,7 @@ jobs:
               if [ -n "$cve" ]; then
                 # Create GitHub issue
                 gh issue create \
-                  --title "🚨 Critical Vulnerability in $service: $cve" \
+                  --title "Critical Vulnerability in $service: $cve" \
                   --body "**Service:** $service
                   **Package:** $package
                   **Current Version:** $version
@@ -93,8 +95,8 @@ jobs:
                   --label "security,critical,vulnerability,$service" || echo "Issue may already exist or failed to create"
               fi
             done
-          doneenv:
-          GH_TOKEN: ${{ github.token }}
+          done
+
 
       - name: Upload SBOM artifacts
         uses: actions/upload-artifact@v4
