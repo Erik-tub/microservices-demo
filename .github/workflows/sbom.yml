@@ -27,7 +27,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ hashFiles('src/**/Dockerfile') }}
+          key: ${{ runner.os }}-buildx-${{ hashFiles('src/**/Dockerfile', 'src/**/requirements.txt', 'src/**/package*.json', 'src/**/go.mod', 'src/**/build.gradle*', 'src/**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
@@ -51,10 +51,11 @@ jobs:
 
             echo "Processing $service from $service_dir..."
 
-            # Build image with cache
+            # Build image with inline cache
             docker buildx build \
               --cache-from type=local,src=/tmp/.buildx-cache \
-              --cache-to type=local,dest=/tmp/.buildx-cache,mode=max \
+              --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
+              --build-arg BUILDKIT_INLINE_CACHE=1 \
               -t $service:latest \
               --load \
               "$service_dir"
@@ -69,6 +70,9 @@ jobs:
             grype $service:latest -o table > sbom/${service}-vulnerabilities.txt
           done
 
+          # Move cache to avoid unbounded growth
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Create labels if they don't exist
         env:
