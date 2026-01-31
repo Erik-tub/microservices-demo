@@ -1,123 +1,158 @@
 name: Generate SBOM and Scan Vulnerabilities
-# yaml
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
-  schedule:
-    - cron: '0 2 * * *'
-
 
 jobs:
-  sbom-and-scan:
+  sbom:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      issues: write
+      packages: write
+      security-events: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_FOR_WORKFLOWS }}
 
-      - name: Install Grype
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Install Syft
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Syft and Grype
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
-      - name: Generate combined SBOM
+      - name: Build and scan all service images
         run: |
-          syft dir:. -o cyclonedx-json > sbom-combined.json
+          mkdir -p sboms vulnerabilities
+          failed_services=()
 
-      - name: Scan for vulnerabilities
-        run: |
-          grype sbom:sbom-combined.json -o json > vuln-combined.json || true
+          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
-      - name: Process individual services for issue creation
-        run: |
-          services=$(cat .github/service-owners.json | jq -c '.services[]')
+          for service_dir in src/*/; do
+            service=$(basename "$service_dir")
+            dockerfile="$service_dir/Dockerfile"
 
-          for service in $services; do
-            name=$(echo $service | jq -r '.name')
-            path=$(echo $service | jq -r '.path')
+            if [ -f "$dockerfile" ]; then
+              echo "Building and scanning $service..."
 
-            echo "Processing $name..."
+              image_name="ghcr.io/${REPO_OWNER}/$(echo $service | tr '[:upper:]' '[:lower:]'):sbom-scan"
 
-            syft dir:$path -o cyclonedx-json > sbom-$name.json
-            grype sbom:sbom-$name.json -o json > vuln-$name.json || true
+              if docker buildx build \
+                --cache-from type=registry,ref=${image_name}-cache \
+                --cache-to type=registry,ref=${image_name}-cache,mode=max \
+                -t "$image_name" \
+                -f "$dockerfile" \
+                "$service_dir" \
+                --load; then
+
+                # Generate SBOM
+                syft "docker:$image_name" -o cyclonedx-json=sboms/${service}.json
+                echo "SBOM generated for $service"
+
+                # Scan for vulnerabilities
+                grype "docker:$image_name" \
+                  -o json \
+                  --file vulnerabilities/${service}.json \
+
+
+                grype "docker:$image_name" \
+                  -o table \
+                  --file vulnerabilities/${service}.txt
+
+                echo "Vulnerability scan completed for $service"
+              else
+                echo "Build failed for $service"
+                failed_services+=("$service")
+              fi
+            else
+              echo "No Dockerfile found for $service"
+            fi
           done
 
-      - name: Upload combined SBOM as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-combined-${{ github.sha }}
-          path: sbom-combined.json
+          echo "Generated SBOMs:"
+          ls -lh sboms/ || echo "No SBOMs generated"
 
-      - name: Upload combined Vulnerability Report as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: vuln-combined-${{ github.sha }}
-          path: vuln-combined.json
+          echo "Vulnerability Reports:"
+          ls -lh vulnerabilities/ || echo "No reports generated"
 
-      - name: Upload individual service reports as Artifacts
+          if [ ${#failed_services[@]} -gt 0 ]; then
+            echo "Failed services: ${failed_services[*]}"
+          fi
+
+      - name: Merge service SBOMs
+        run: |
+          if [ -z "$(ls -A sboms/*.json 2>/dev/null)" ]; then
+            echo "No SBOMs found - creating empty SBOM"
+            echo '{
+              "bomFormat": "CycloneDX",
+              "specVersion": "1.4",
+              "serialNumber": "urn:uuid:'$(uuidgen)'",
+              "version": 1,
+              "components": []
+            }' > sbom.json
+          else
+            jq -s '{
+              bomFormat: .[0].bomFormat,
+              specVersion: .[0].specVersion,
+              serialNumber: "urn:uuid:'$(uuidgen)'",
+              version: 1,
+              metadata: {
+                timestamp: (now | strftime("%Y-%m-%dT%H:%M:%SZ")),
+                tools: (.[0].metadata.tools // []),
+                component: {
+                  type: "application",
+                  name: "microservices-demo",
+                  version: "'${{ github.sha }}'"
+                }
+              },
+              components: ([.[].components // []] | add | unique_by(.purl // .name))
+            }' sboms/*.json > sbom.json
+          fi
+
+      - name: Generate vulnerability summary
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "# Vulnerability Summary" > vulnerability-summary.md
+          echo "Generated: $(date)" >> vulnerability-summary.md
+          echo "" >> vulnerability-summary.md
+
+          for report in vulnerabilities/*.txt; do
+            if [ -f "$report" ]; then
+              service=$(basename "$report" .txt)
+              echo "## $service" >> vulnerability-summary.md
+              echo '```' >> vulnerability-summary.md
+              cat "$report" >> vulnerability-summary.md
+              echo '```' >> vulnerability-summary.md
+              echo "" >> vulnerability-summary.md
+            fi
+          done
+
+      - name: Upload SBOM and Vulnerability Reports
         uses: actions/upload-artifact@v4
         with:
-          name: service-reports-${{ github.sha }}
+          name: security-reports-${{ github.sha }}
           path: |
-            sbom-*.json
-            vuln-*.json
+            sbom.json
+            sboms/
+            vulnerabilities/
+            vulnerability-summary.md
 
       - name: Commit SBOM and Vulnerability Reports (main only)
         if: github.ref == 'refs/heads/main'
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-
-          mkdir -p reports-latest
-          cp sbom-combined.json reports-latest/
-          cp vuln-combined.json reports-latest/
-
-          git add reports-latest/
+          mv sbom.json sbom-latest.json
+          git add sbom-latest.json vulnerability-summary.md
           git diff --staged --quiet || git commit -m "Update SBOM and vulnerability reports [skip ci]"
           git push
-
-      - name: Create issues for critical vulnerabilities
-        if: github.ref == 'refs/heads/main'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const services = JSON.parse(fs.readFileSync('.github/service-owners.json', 'utf8')).services;
-
-            for (const service of services) {
-              const vulnFile = `vuln-${service.name}.json`;
-              if (fs.existsSync(vulnFile)) {
-                const vulns = JSON.parse(fs.readFileSync(vulnFile, 'utf8'));
-                const critical = vulns.matches?.filter(v => v.vulnerability.severity === 'Critical') || [];
-
-                if (critical.length > 0) {
-                  const issueBody = `**${critical.length} critical vulnerabilities** found in \`${service.name}\`\n\n` +
-                    `**Top vulnerabilities:**\n` +
-                    critical.slice(0, 10).map(v =>
-                      `- **${v.vulnerability.id}** in \`${v.artifact.name}@${v.artifact.version}\`\n` +
-                      `  Severity: ${v.vulnerability.severity}\n` +
-                      `  ${v.vulnerability.description || 'No description available'}\n` +
-                      `  Fix: ${v.vulnerability.fix?.state || 'Unknown'}`
-                    ).join('\n\n');
-
-                  const assignees = service.github_username && service.github_username.trim() !== ''
-                    ? [service.github_username]
-                    : [];
-
-                  await github.rest.issues.create({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    title: `Critical vulnerabilities in ${service.name}`,
-                    body: issueBody,
-                    labels: ['security', 'critical', service.name],
-                    assignees: assignees
-                  });
-                }
-              }
-            }
