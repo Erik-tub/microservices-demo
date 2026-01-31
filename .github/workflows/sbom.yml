@@ -27,7 +27,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ hashFiles('src/**/Dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
@@ -70,8 +70,10 @@ jobs:
           done
 
           # Move cache to avoid unbounded growth
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          if [ -d /tmp/.buildx-cache-new ]; then
+            rm -rf /tmp/.buildx-cache
+            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          fi
 
       - name: Create labels if they don't exist
         env:
