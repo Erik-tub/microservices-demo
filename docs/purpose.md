@@ -7,7 +7,7 @@ Today, the primary purpose of Online Boutique is to demonstrate:
 * [Google Cloud Operations](https://cloud.google.com/products/operations)
 * tools and technologies commonly used alongside the above products
 
-while being accessible and useful to Kubernetes users.
+while being accessible to Kubernetes users.
 
 ### Why does the purpose matter?
 
