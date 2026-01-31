@@ -34,6 +34,17 @@ jobs:
       - name: Create SBOM directory
         run: mkdir -p sbom
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+         path: /tmp/.buildx-cache
+         key: ${{ runner.os }}-buildx-${{ github.sha }}
+         restore-keys: |
+            ${{ runner.os }}-buildx-
+
       - name: Build and scan services
         run: |
           # Find all Dockerfiles recursively
@@ -43,8 +54,13 @@ jobs:
 
             echo "Processing $service from $service_dir..."
 
-            # Build image
-            docker build -t $service:latest "$service_dir"
+            # Build image with cache
+            docker buildx build \
+              --cache-from type=local,src=/tmp/.buildx-cache \
+              --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
+              -t $service:latest \
+              --load \
+              "$service_dir"
 
             # Generate SBOM
             syft $service:latest -o json > sbom/${service}-sbom.json
@@ -55,6 +71,11 @@ jobs:
             # Generate human-readable report
             grype $service:latest -o table > sbom/${service}-vulnerabilities.txt
           done
+
+          # Move cache to avoid unbounded growth
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
 
       - name: Create labels if they don't exist
         env:
