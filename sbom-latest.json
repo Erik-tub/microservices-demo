@@ -1,24 +1,24 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:59689c8a-8827-416d-becc-6a7d275db8cb",
+  "serialNumber": "urn:uuid:3bdc02fb-78a0-4323-b52b-ce5ad6212c11",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-01-20T22:23:15Z",
+    "timestamp": "2026-01-31T12:00:01Z",
     "tools": {
       "components": [
         {
           "type": "application",
           "author": "anchore",
           "name": "syft",
-          "version": "1.40.1"
+          "version": "1.41.1"
         }
       ]
     },
     "component": {
       "type": "application",
       "name": "microservices-demo",
-      "version": "a0a440a97a4139ab505f8f7ad41cd1440002a3f0"
+      "version": "17b4b783cc74369000b9f2d179a706f8865579e4"
     }
   },
   "components": [
@@ -135316,7 +135316,7 @@
         },
         {
           "name": "syft:location:0:path",
-          "value": "/usr/local/lib/libpython3.12.so.1.0"
+          "value": "/usr/local/bin/python3.12"
         },
         {
           "name": "syft:location:1:layerID",
@@ -135324,7 +135324,7 @@
         },
         {
           "name": "syft:location:1:path",
-          "value": "/usr/local/bin/python3.12"
+          "value": "/usr/local/lib/libpython3.12.so.1.0"
         }
       ]
     },
@@ -135358,7 +135358,7 @@
         },
         {
           "name": "syft:location:0:path",
-          "value": "/usr/local/lib/libpython3.12.so.1.0"
+          "value": "/usr/local/bin/python3.12"
         },
         {
           "name": "syft:location:1:layerID",
@@ -135366,7 +135366,7 @@
         },
         {
           "name": "syft:location:1:path",
-          "value": "/usr/local/bin/python3.12"
+          "value": "/usr/local/lib/libpython3.12.so.1.0"
         }
       ]
     },
