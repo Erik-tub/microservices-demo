@@ -54,7 +54,7 @@ jobs:
             # Build image with cache
             docker buildx build \
               --cache-from type=local,src=/tmp/.buildx-cache \
-              --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max \
+              --cache-to type=local,dest=/tmp/.buildx-cache,mode=max \
               -t $service:latest \
               --load \
               "$service_dir"
@@ -68,12 +68,7 @@ jobs:
             # Generate human-readable report
             grype $service:latest -o table > sbom/${service}-vulnerabilities.txt
           done
-
-          # Move cache to avoid unbounded growth
-          if [ -d /tmp/.buildx-cache-new ]; then
-            rm -rf /tmp/.buildx-cache
-            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-          fi
+      
 
       - name: Create labels if they don't exist
         env:
