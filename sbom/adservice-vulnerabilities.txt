@@ -1,0 +1,64 @@
+NAME                 INSTALLED      FIXED IN                                            TYPE          VULNERABILITY        SEVERITY  EPSS           RISK   
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15467       Critical  0.4% (62nd)    0.4    
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15467       Critical  0.4% (62nd)    0.4    
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15467       Critical  0.4% (62nd)    0.4    
+log4j-core           2.25.2         2.25.3                                              java-archive  GHSA-vc5p-v9hr-52mj  Medium    0.3% (55th)    0.2    
+libpng               1.6.47-r0      1.6.53-r0                                           apk           CVE-2025-66293       High      < 0.1% (21st)  < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69420       High      < 0.1% (20th)  < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69420       High      < 0.1% (20th)  < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69420       High      < 0.1% (20th)  < 0.1  
+libpng               1.6.47-r0      1.6.51-r0                                           apk           CVE-2025-64720       High      < 0.1% (19th)  < 0.1  
+libtasn1             4.20.0-r0      4.21.0-r0                                           apk           CVE-2025-13151       High      < 0.1% (17th)  < 0.1  
+coreutils            9.7-r1                                                             apk           CVE-2016-2781        Medium    < 0.1% (24th)  < 0.1  
+coreutils-env        9.7-r1                                                             apk           CVE-2016-2781        Medium    < 0.1% (24th)  < 0.1  
+coreutils-fmt        9.7-r1                                                             apk           CVE-2016-2781        Medium    < 0.1% (24th)  < 0.1  
+coreutils-sha512sum  9.7-r1                                                             apk           CVE-2016-2781        Medium    < 0.1% (24th)  < 0.1  
+openjdk              25.0.1+8-LTS   1.8.0_482, 8.0.482, 11.0.30, 17.0.18, *25.0.2, ...  binary        CVE-2026-21945       High      < 0.1% (16th)  < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2026-22796       Medium    < 0.1% (20th)  < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2026-22796       Medium    < 0.1% (20th)  < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2026-22796       Medium    < 0.1% (20th)  < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69419       High      < 0.1% (13th)  < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69419       High      < 0.1% (13th)  < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69419       High      < 0.1% (13th)  < 0.1  
+busybox              1.37.0-r19                                                         apk           CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
+busybox-binsh        1.37.0-r19                                                         apk           CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
+ssl_client           1.37.0-r19                                                         apk           CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-66199       Medium    < 0.1% (13th)  < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-66199       Medium    < 0.1% (13th)  < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-66199       Medium    < 0.1% (13th)  < 0.1  
+libpng               1.6.47-r0      1.6.51-r0                                           apk           CVE-2025-65018       High      < 0.1% (9th)   < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15468       Medium    < 0.1% (13th)  < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15468       Medium    < 0.1% (13th)  < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15468       Medium    < 0.1% (13th)  < 0.1  
+openjdk              25.0.1+8-LTS   1.8.0_482, 8.0.482, 11.0.30, 17.0.18, *25.0.2, ...  binary        CVE-2026-21932       High      < 0.1% (8th)   < 0.1  
+openjdk              25.0.1+8-LTS   1.8.0_482, 8.0.482, 11.0.30, 17.0.18, *25.0.2, ...  binary        CVE-2026-21925       Medium    < 0.1% (10th)  < 0.1  
+openjdk              25.0.1+8-LTS   1.8.0_482, 8.0.482, 11.0.30, 17.0.18, *25.0.2, ...  binary        CVE-2026-21933       Medium    < 0.1% (8th)   < 0.1  
+netty-codec-http     4.1.127.Final  4.1.129.Final                                       java-archive  GHSA-84h7-rjj3-6jx4  Medium    < 0.1% (6th)   < 0.1  
+libpng               1.6.47-r0      1.6.54-r0                                           apk           CVE-2026-22695       High      < 0.1% (3rd)   < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69421       Unknown   < 0.1% (5th)   < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69421       Unknown   < 0.1% (5th)   < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69421       Unknown   < 0.1% (5th)   < 0.1  
+libpng               1.6.47-r0      1.6.54-r0                                           apk           CVE-2026-22801       High      < 0.1% (1st)   < 0.1  
+busybox              1.37.0-r19     1.37.0-r20                                          apk           CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
+busybox-binsh        1.37.0-r19     1.37.0-r20                                          apk           CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
+ssl_client           1.37.0-r19     1.37.0-r20                                          apk           CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
+libpng               1.6.47-r0      1.6.51-r0                                           apk           CVE-2025-64505       Medium    < 0.1% (2nd)   < 0.1  
+libpng               1.6.47-r0      1.6.51-r0                                           apk           CVE-2025-64506       Medium    < 0.1% (2nd)   < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-11187       Medium    < 0.1% (1st)   < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-11187       Medium    < 0.1% (1st)   < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-11187       Medium    < 0.1% (1st)   < 0.1  
+busybox              1.37.0-r19     1.37.0-r20                                          apk           CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
+busybox-binsh        1.37.0-r19     1.37.0-r20                                          apk           CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
+ssl_client           1.37.0-r19     1.37.0-r20                                          apk           CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2026-22795       Medium    < 0.1% (1st)   < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2026-22795       Medium    < 0.1% (1st)   < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2026-22795       Medium    < 0.1% (1st)   < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15469       Medium    < 0.1% (0th)   < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15469       Medium    < 0.1% (0th)   < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-15469       Medium    < 0.1% (0th)   < 0.1  
+libcrypto3           3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69418       Medium    < 0.1% (0th)   < 0.1  
+libssl3              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69418       Medium    < 0.1% (0th)   < 0.1  
+openssl              3.5.4-r0       3.5.5-r0                                            apk           CVE-2025-69418       Medium    < 0.1% (0th)   < 0.1

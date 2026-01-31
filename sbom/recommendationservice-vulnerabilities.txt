@@ -1,0 +1,58 @@
+NAME           INSTALLED   FIXED IN                    TYPE    VULNERABILITY        SEVERITY  EPSS           RISK   
+certifi        2023.7.22   2024.7.4                    python  GHSA-248v-346w-9cwc  Low       21.2% (95th)   6.4    
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-15467       Critical  0.4% (62nd)    0.4    
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-15467       Critical  0.4% (62nd)    0.4    
+idna           3.4         3.7                         python  GHSA-jjg7-2v4v-x38h  Medium    0.7% (70th)    0.4    
+urllib3        2.0.7       2.2.2                       python  GHSA-34jh-p97f-mpxf  Medium    0.3% (49th)    0.1    
+python         3.12.12     *3.13.11, 3.14.1, 3.15.0    binary  CVE-2025-13836       Critical  0.1% (28th)    < 0.1  
+requests       2.31.0      2.32.4                      python  GHSA-9hjg-9r4m-mvj7  Medium    < 0.1% (27th)  < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69420       High      < 0.1% (20th)  < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69420       High      < 0.1% (20th)  < 0.1  
+python         3.12.12     *3.13.11, 3.14.2, 3.15.0    binary  CVE-2025-12084       Medium    < 0.1% (25th)  < 0.1  
+python         3.12.12     3.15.0                      binary  CVE-2026-0865        Medium    < 0.1% (25th)  < 0.1  
+python         3.12.12     3.15.0                      binary  CVE-2025-15282       Medium    < 0.1% (24th)  < 0.1  
+python         3.12.12     3.15.0                      binary  CVE-2026-0672        Medium    < 0.1% (24th)  < 0.1  
+python         3.12.12     3.15.0                      binary  CVE-2025-12781       Medium    < 0.1% (20th)  < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2026-22796       Medium    < 0.1% (20th)  < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2026-22796       Medium    < 0.1% (20th)  < 0.1  
+python         3.12.12     3.15.0                      binary  CVE-2025-11468       Medium    < 0.1% (19th)  < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69419       High      < 0.1% (13th)  < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69419       High      < 0.1% (13th)  < 0.1  
+python         3.12.12     3.15.0                      binary  CVE-2025-15366       Medium    < 0.1% (17th)  < 0.1  
+python         3.12.12     3.15.0                      binary  CVE-2025-15367       Medium    < 0.1% (17th)  < 0.1  
+busybox        1.37.0-r19                              apk     CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
+busybox-binsh  1.37.0-r19                              apk     CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
+ssl_client     1.37.0-r19                              apk     CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-66199       Medium    < 0.1% (13th)  < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-66199       Medium    < 0.1% (13th)  < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-15468       Medium    < 0.1% (13th)  < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-15468       Medium    < 0.1% (13th)  < 0.1  
+requests       2.31.0      2.32.0                      python  GHSA-9wx4-h78v-vm56  Medium    < 0.1% (13th)  < 0.1  
+urllib3        2.0.7       2.6.0                       python  GHSA-gm62-xv2j-4w53  High      < 0.1% (7th)   < 0.1  
+urllib3        2.0.7       2.6.0                       python  GHSA-2xpw-w6gg-jr37  High      < 0.1% (6th)   < 0.1  
+protobuf       4.25.0      6.33.5                      python  GHSA-7gcm-g887-7qv7  High      < 0.1% (4th)   < 0.1  
+protobuf       4.25.0      4.25.8                      python  GHSA-8qvm-5x2c-j2w7  High      < 0.1% (3rd)   < 0.1  
+urllib3        2.0.7       2.6.3                       python  GHSA-38jv-5279-wg99  High      < 0.1% (3rd)   < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69421       Unknown   < 0.1% (5th)   < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69421       Unknown   < 0.1% (5th)   < 0.1  
+pip            25.0.1      25.3                        python  GHSA-4xh5-x5gv-qwph  Medium    < 0.1% (5th)   < 0.1  
+busybox        1.37.0-r19  1.37.0-r20                  apk     CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
+busybox-binsh  1.37.0-r19  1.37.0-r20                  apk     CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
+ssl_client     1.37.0-r19  1.37.0-r20                  apk     CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
+zipp           3.17.0      3.19.1                      python  GHSA-jfmj-5v4g-7637  Medium    < 0.1% (2nd)   < 0.1  
+urllib3        2.0.7       2.5.0                       python  GHSA-pq67-6m6q-mj2v  Medium    < 0.1% (3rd)   < 0.1  
+python         3.12.12     *3.13.10, 3.14.1, 3.15.0    binary  CVE-2025-13837       Medium    < 0.1% (4th)   < 0.1  
+python         3.12.12     *3.13.10, 3.14.1, 3.15.0a2  binary  CVE-2025-6075        Low       < 0.1% (8th)   < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-11187       Medium    < 0.1% (1st)   < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-11187       Medium    < 0.1% (1st)   < 0.1  
+busybox        1.37.0-r19  1.37.0-r20                  apk     CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
+busybox-binsh  1.37.0-r19  1.37.0-r20                  apk     CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
+ssl_client     1.37.0-r19  1.37.0-r20                  apk     CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2026-22795       Medium    < 0.1% (1st)   < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2026-22795       Medium    < 0.1% (1st)   < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-15469       Medium    < 0.1% (0th)   < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-15469       Medium    < 0.1% (0th)   < 0.1  
+libcrypto3     3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69418       Medium    < 0.1% (0th)   < 0.1  
+libssl3        3.5.4-r0    3.5.5-r0                    apk     CVE-2025-69418       Medium    < 0.1% (0th)   < 0.1

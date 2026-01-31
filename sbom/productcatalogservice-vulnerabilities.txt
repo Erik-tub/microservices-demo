@@ -1,0 +1,8 @@
+NAME    INSTALLED  FIXED IN          TYPE       VULNERABILITY   SEVERITY  EPSS          RISK   
+stdlib  go1.25.4   1.24.12, *1.25.6  go-module  CVE-2025-61726  High      < 0.1% (5th)  < 0.1  
+stdlib  go1.25.4   1.24.11, *1.25.5  go-module  CVE-2025-61729  High      < 0.1% (3rd)  < 0.1  
+stdlib  go1.25.4   1.24.12, *1.25.6  go-module  CVE-2025-61728  Medium    < 0.1% (2nd)  < 0.1  
+stdlib  go1.25.4   1.24.12, *1.25.6  go-module  CVE-2025-61731  High      < 0.1% (0th)  < 0.1  
+stdlib  go1.25.4   1.25.6            go-module  CVE-2025-68119  High      < 0.1% (0th)  < 0.1  
+stdlib  go1.25.4   1.24.11, *1.25.5  go-module  CVE-2025-61727  Medium    < 0.1% (0th)  < 0.1  
+stdlib  go1.25.4   1.24.12, *1.25.6  go-module  CVE-2025-61730  Medium    < 0.1% (0th)  < 0.1
