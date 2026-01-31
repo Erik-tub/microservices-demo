@@ -47,7 +47,7 @@ jobs:
 
       - name: Build and scan services
         run: |
-          # Find all Dockerfiles recursively
+          # Find all Dockerfiles
           find src -name Dockerfile -type f | while read dockerfile; do
             service_dir=$(dirname "$dockerfile")
             service=$(basename "$service_dir")
