@@ -68,7 +68,7 @@ jobs:
             # Generate human-readable report
             grype $service:latest -o table > sbom/${service}-vulnerabilities.txt
           done
-      
+
 
       - name: Create labels if they don't exist
         env:
