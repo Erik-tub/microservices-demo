@@ -1,8 +1,8 @@
 NAME                INSTALLED                FIXED IN                 TYPE  VULNERABILITY   SEVERITY  EPSS           RISK   
 login               1:4.13+dfsg1-4ubuntu3.2                           deb   CVE-2024-56433  Low       5.1% (89th)    1.5    
 passwd              1:4.13+dfsg1-4ubuntu3.2                           deb   CVE-2024-56433  Low       5.1% (89th)    1.5    
-libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-15467  Medium    0.4% (62nd)    0.2    
-openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-15467  Medium    0.4% (62nd)    0.2    
+libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-15467  Medium    0.4% (59th)    0.2    
+openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-15467  Medium    0.4% (59th)    0.2    
 libpam-modules      1.5.3-5ubuntu5.4         1.5.3-5ubuntu5.5         deb   CVE-2024-10963  Medium    0.4% (58th)    0.2    
 libpam-modules-bin  1.5.3-5ubuntu5.4         1.5.3-5ubuntu5.5         deb   CVE-2024-10963  Medium    0.4% (58th)    0.2    
 libpam-runtime      1.5.3-5ubuntu5.4         1.5.3-5ubuntu5.5         deb   CVE-2024-10963  Medium    0.4% (58th)    0.2    
@@ -11,43 +11,43 @@ libgcrypt20         1.10.3-2build1                                    deb   CVE-
 dpkg                1.22.6ubuntu6.1          1.22.6ubuntu6.5          deb   CVE-2025-6297   Low       0.1% (30th)    < 0.1  
 tar                 1.35+dfsg-3build1                                 deb   CVE-2025-45582  Medium    < 0.1% (18th)  < 0.1  
 libtasn1-6          4.19.0-3ubuntu0.24.04.1  4.19.0-3ubuntu0.24.04.2  deb   CVE-2025-13151  Medium    < 0.1% (17th)  < 0.1  
+libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22796  Low       < 0.1% (25th)  < 0.1  
+openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22796  Low       < 0.1% (25th)  < 0.1  
 libc-bin            2.39-0ubuntu8.5                                   deb   CVE-2025-15281  Medium    < 0.1% (16th)  < 0.1  
 libc6               2.39-0ubuntu8.5                                   deb   CVE-2025-15281  Medium    < 0.1% (16th)  < 0.1  
+libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69420  Low       < 0.1% (24th)  < 0.1  
+openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69420  Low       < 0.1% (24th)  < 0.1  
 coreutils           9.4-3ubuntu6                                      deb   CVE-2016-2781   Low       < 0.1% (24th)  < 0.1  
 libc-bin            2.39-0ubuntu8.5                                   deb   CVE-2026-0915   Medium    < 0.1% (12th)  < 0.1  
 libc6               2.39-0ubuntu8.5                                   deb   CVE-2026-0915   Medium    < 0.1% (12th)  < 0.1  
-libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22796  Low       < 0.1% (20th)  < 0.1  
-openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22796  Low       < 0.1% (20th)  < 0.1  
-libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69420  Low       < 0.1% (20th)  < 0.1  
-openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69420  Low       < 0.1% (20th)  < 0.1  
+libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69419  Low       < 0.1% (17th)  < 0.1  
+openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69419  Low       < 0.1% (17th)  < 0.1  
 libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.6        deb   CVE-2025-9230   Medium    < 0.1% (8th)   < 0.1  
 openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.6        deb   CVE-2025-9230   Medium    < 0.1% (8th)   < 0.1  
-gpgv                2.4.4-2ubuntu17.3        2.4.4-2ubuntu17.4        deb   CVE-2025-68973  High      < 0.1% (3rd)   < 0.1  
-libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69419  Low       < 0.1% (13th)  < 0.1  
-openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69419  Low       < 0.1% (13th)  < 0.1  
+gpgv                2.4.4-2ubuntu17.3        2.4.4-2ubuntu17.4        deb   CVE-2025-68973  High      < 0.1% (4th)   < 0.1  
+libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69421  Low       < 0.1% (8th)   < 0.1  
+openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69421  Low       < 0.1% (8th)   < 0.1  
 libicu74            74.2-1ubuntu3.1                                   deb   CVE-2025-5222   Low       < 0.1% (8th)   < 0.1  
 libc-bin            2.39-0ubuntu8.5                                   deb   CVE-2026-0861   Medium    < 0.1% (2nd)   < 0.1  
 libc6               2.39-0ubuntu8.5                                   deb   CVE-2026-0861   Medium    < 0.1% (2nd)   < 0.1  
-libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69421  Low       < 0.1% (5th)   < 0.1  
-openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69421  Low       < 0.1% (5th)   < 0.1  
-libpam-modules      1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (1st)   < 0.1  
-libpam-modules-bin  1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (1st)   < 0.1  
-libpam-runtime      1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (1st)   < 0.1  
-libpam0g            1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (1st)   < 0.1  
 coreutils           9.4-3ubuntu6                                      deb   CVE-2025-5278   Low       < 0.1% (4th)   < 0.1  
 gpgv                2.4.4-2ubuntu17.3                                 deb   CVE-2022-3219   Low       < 0.1% (4th)   < 0.1  
+libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22795  Low       < 0.1% (3rd)   < 0.1  
+openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22795  Low       < 0.1% (3rd)   < 0.1  
 libncursesw6        6.4+20240113-1ubuntu2                             deb   CVE-2025-6141   Low       < 0.1% (3rd)   < 0.1  
 libtinfo6           6.4+20240113-1ubuntu2                             deb   CVE-2025-6141   Low       < 0.1% (3rd)   < 0.1  
 ncurses-base        6.4+20240113-1ubuntu2                             deb   CVE-2025-6141   Low       < 0.1% (3rd)   < 0.1  
 ncurses-bin         6.4+20240113-1ubuntu2                             deb   CVE-2025-6141   Low       < 0.1% (3rd)   < 0.1  
-libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22795  Low       < 0.1% (1st)   < 0.1  
-openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2026-22795  Low       < 0.1% (1st)   < 0.1  
+libpam-modules      1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (0th)   < 0.1  
+libpam-modules-bin  1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (0th)   < 0.1  
+libpam-runtime      1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (0th)   < 0.1  
+libpam0g            1.5.3-5ubuntu5.4                                  deb   CVE-2025-8941   Medium    < 0.1% (0th)   < 0.1  
 libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-68160  Low       < 0.1% (1st)   < 0.1  
 openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-68160  Low       < 0.1% (1st)   < 0.1  
 libc-bin            2.39-0ubuntu8.5          2.39-0ubuntu8.6          deb   CVE-2025-8058   Medium    < 0.1% (0th)   < 0.1  
 libc6               2.39-0ubuntu8.5          2.39-0ubuntu8.6          deb   CVE-2025-8058   Medium    < 0.1% (0th)   < 0.1  
-gpgv                2.4.4-2ubuntu17.3                                 deb   CVE-2025-68972  Medium    < 0.1% (0th)   < 0.1  
 gpgv                2.4.4-2ubuntu17.3                                 deb   CVE-2026-24882  Medium    < 0.1% (0th)   < 0.1  
+gpgv                2.4.4-2ubuntu17.3                                 deb   CVE-2025-68972  Medium    < 0.1% (0th)   < 0.1  
 libgnutls30t64      3.8.3-1.1ubuntu3.4                                deb   CVE-2025-9820   Low       < 0.1% (0th)   < 0.1  
 libssl3t64          3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69418  Low       < 0.1% (0th)   < 0.1  
 openssl             3.0.13-0ubuntu3.5        3.0.13-0ubuntu3.7        deb   CVE-2025-69418  Low       < 0.1% (0th)   < 0.1

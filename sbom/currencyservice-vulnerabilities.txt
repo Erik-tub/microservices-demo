@@ -1,39 +1,39 @@
 NAME                   INSTALLED   FIXED IN    TYPE  VULNERABILITY        SEVERITY  EPSS           RISK   
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-15467       Critical  0.4% (62nd)    0.4    
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-15467       Critical  0.4% (62nd)    0.4    
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-15467       Critical  0.4% (59th)    0.4    
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-15467       Critical  0.4% (59th)    0.4    
 taffydb                2.6.2                   npm   GHSA-mxhp-79qh-mcx6  High      0.4% (59th)    0.3    
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-69420       High      < 0.1% (24th)  < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-69420       High      < 0.1% (24th)  < 0.1  
 ada-libs               2.9.2-r4                apk   CVE-2024-9410        Medium    0.1% (29th)    < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-69420       High      < 0.1% (20th)  < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-69420       High      < 0.1% (20th)  < 0.1  
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2026-22796       Medium    < 0.1% (25th)  < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2026-22796       Medium    < 0.1% (25th)  < 0.1  
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-69419       High      < 0.1% (17th)  < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-69419       High      < 0.1% (17th)  < 0.1  
 lodash                 4.17.21     4.17.23     npm   GHSA-xxjr-mmjv-4gpg  Medium    < 0.1% (18th)  < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2026-22796       Medium    < 0.1% (20th)  < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2026-22796       Medium    < 0.1% (20th)  < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-69419       High      < 0.1% (13th)  < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-69419       High      < 0.1% (13th)  < 0.1  
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-66199       Medium    < 0.1% (18th)  < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-66199       Medium    < 0.1% (18th)  < 0.1  
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-15468       Medium    < 0.1% (18th)  < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-15468       Medium    < 0.1% (18th)  < 0.1  
 busybox                1.37.0-r19              apk   CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
 busybox-binsh          1.37.0-r19              apk   CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
 ssl_client             1.37.0-r19              apk   CVE-2025-60876       Medium    < 0.1% (16th)  < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-66199       Medium    < 0.1% (13th)  < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-66199       Medium    < 0.1% (13th)  < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-15468       Medium    < 0.1% (13th)  < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-15468       Medium    < 0.1% (13th)  < 0.1  
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-69421       High      < 0.1% (8th)   < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-69421       High      < 0.1% (8th)   < 0.1  
 tar                    6.2.1       7.5.7       npm   GHSA-34x7-hfp2-rc4v  High      < 0.1% (6th)   < 0.1  
 tmp                    0.2.1       0.2.4       npm   GHSA-52f5-9888-hmc6  Low       < 0.1% (22nd)  < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-69421       Unknown   < 0.1% (5th)   < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-69421       Unknown   < 0.1% (5th)   < 0.1  
 tar                    6.2.1       7.5.4       npm   GHSA-r6q2-hw4h-h46w  High      < 0.1% (2nd)   < 0.1  
 busybox                1.37.0-r19  1.37.0-r20  apk   CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
 busybox-binsh          1.37.0-r19  1.37.0-r20  apk   CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
 ssl_client             1.37.0-r19  1.37.0-r20  apk   CVE-2025-46394       Low       < 0.1% (8th)   < 0.1  
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2026-22795       Medium    < 0.1% (3rd)   < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2026-22795       Medium    < 0.1% (3rd)   < 0.1  
+libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
+libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
 libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-11187       Medium    < 0.1% (1st)   < 0.1  
 libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-11187       Medium    < 0.1% (1st)   < 0.1  
 busybox                1.37.0-r19  1.37.0-r20  apk   CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
 busybox-binsh          1.37.0-r19  1.37.0-r20  apk   CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
 ssl_client             1.37.0-r19  1.37.0-r20  apk   CVE-2024-58251       Low       < 0.1% (5th)   < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2026-22795       Medium    < 0.1% (1st)   < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2026-22795       Medium    < 0.1% (1st)   < 0.1  
-libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
-libssl3                3.5.4-r0    3.5.5-r0    apk   CVE-2025-68160       Medium    < 0.1% (1st)   < 0.1  
 brace-expansion        1.1.11      1.1.12      npm   GHSA-v6h2-p8h4-qcjw  Low       < 0.1% (4th)   < 0.1  
 tar                    6.2.1       7.5.3       npm   GHSA-8qq5-rm4j-mr97  High      < 0.1% (0th)   < 0.1  
 libcrypto3             3.5.4-r0    3.5.5-r0    apk   CVE-2025-15469       Medium    < 0.1% (0th)   < 0.1  
